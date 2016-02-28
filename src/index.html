@@ -84,7 +84,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.html">Page Post Manager</a>
+          <a class="navbar-brand" href="index.html">Page/Group Post Manager</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -104,14 +104,14 @@
       <div class="jumbotron">
 		<table>
 			<tr><td><img src="pagepostmanager.png"></td>
-			<td><h1 id="lblSbBigTitle">Page Post Manager <small><br/>for Facebook</small></h1></td></tr>
+			<td><h1 id="lblSbBigTitle">Page/Group Post Manager <small><br/>for Facebook</small></h1></td></tr>
 		</table>
         <p id='lblSbWelcome'>Tired of clicking 'Load More Comments' from your post to get all comments?<br/>
-        With Page Post Manager for Facebook, You can easily get comments and likes from your pages' posting.<br/>
+        With Page/Group Post Manager for Facebook, You can easily get comments and likes from your pages/groups' posting.<br/>
         Get complete list of comments and likes in a single click, in a minute.</p>
         <p><button id="btnStart" class="btn btn-primary btn-lg" role="button">Login to facebook and Start &raquo;</button></p>
 		<div id="alertLoginFail" class="alert alert-warning fade in" role="alert">
-			<strong id='lblSbLoginFailed'>Login Failed</strong> <span id="lblSbLoginFailedDetail">Page Post Manager did not get login information properly. Please try again.</span>
+			<strong id='lblSbLoginFailed'>Login Failed</strong> <span id="lblSbLoginFailedDetail">Page/Group Post Manager did not get login information properly. Please try again.</span>
 		</div>
       </div>
     </div>
@@ -119,7 +119,7 @@
     <div id="divMain" class="container theme-showcase" role="main">
 	<div id="myTab" class="bs-example bs-example-tabs">
 		<ul id="tabs" class="nav nav-tabs" role="tablist">
-			<li class="active"><a href="#tabsPages" role="tab" data-toggle="tab">Pages</a></li>
+			<li class="active"><a href="#tabsPages" role="tab" data-toggle="tab">Pages/Groups</a></li>
 			<li><a href="#tabsPosts" role="tab" data-toggle="tab">Posts</a></li>
 			<li><a href="#tabsDetail" role="tab" data-toggle="tab">Detail</a></li>
 		</ul>
@@ -130,17 +130,25 @@
 				<table id="tblSearchOption" class="table table-bordered table-hover table-striped" style="width:50%">
 					<tr>
 						<td><span id="lblSbGetAdminPages">Get Pages I am admin of</span></td>
-						<td><button id="btnPagesAdminRefresh" class="btn btn-primary">Show</button> <i id="lblSbAdminPerm">Note : Requires extra permission</i></td>
+						<td><button id="btnPagesAdminRefresh" class="btn btn-primary">Show</button> <i id="lblSbPagesAdminPerm">Note : Requires extra permission</i></td>
 					</tr>
 					<tr>
 						<td><span id="lblSbSearchPages">Search Page by Text</span></td>
 						<td><input id="txtSearch"> <button id="btnPagesSearchRefresh" class="btn btn-primary">Search</button></td>
 					</tr>
+					<tr class='hidden'>
+						<td><span id="lblSbGetAdminGroups">Get Groups I am admin of</span></td>
+						<td><button id="btnGroupsAdminRefresh" class="btn btn-primary">Show</button> <i id="lblSbGroupsAdminPerm">Note : Requires extra permission</i></td>
+					</tr>
+					<tr>
+						<td><span id="lblSbSearchGroups">Search Group by Text</span> <b>New!</b><br/></td>
+						<td><input id="txtSearchGroup"> <button id="btnGroupsSearchRefresh" class="btn btn-primary">Search</button></td>
+					</tr>
 				</table>
 				<br/>
 				<br/>
 				<div id="pnlPageSearch">
-				<span id="lblSbChoosePage">Choose one of the pages below : </span><br/>
+				<span id="lblSbChoosePage">Choose one of the pages/groups below : </span><br/>
 				<br/>
 				<input type="button" class="btn btn-default" id="btnPageListPrev" value="&laquo; Prev"/>
 				<input type="button" class="btn btn-default" id="btnPageListNext" value="Next &raquo;"/><br/>

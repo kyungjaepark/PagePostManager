@@ -12,7 +12,9 @@ var g_appContext =
 	selectedPageId: 0,
 	postLoader:null,
 	downloaderModal: null,
-	grantedScopes: []
+	grantedScopes: [],
+	isGroupMode: false,
+	isGroupSelected: false
 };
 
 // http://stackoverflow.com/questions/1744310/how-to-fix-array-indexof-in-javascript-for-internet-explorer-browsers
@@ -249,22 +251,24 @@ function startApp()
 function refreshLikedPages(isAdmin)
 {
 	if (isAdmin)
-		startRequestPageList('/me/accounts', {});
+		startRequestPageList('/me/accounts', {}, false);
 	else
-		startRequestPageList('/me/likes', {});
+		startRequestPageList('/me/likes', {}, false);
 }
 
-function refreshBySearch(searchString)
+// isPages : {true=page|false=group}
+function refreshBySearch(searchString, isGroup)
 {
 	if (searchString == "")
 		return;
 
-	startRequestPageList('/search', { q: searchString, type: 'page' });
+	startRequestPageList('/search', { q: searchString, type: isGroup ? 'group' : 'page' }, isGroup);
 }
 
-function startRequestPageList(apiPrefix, param)
+function startRequestPageList(apiPrefix, param, isGroup)
 {
-	param["fields"] = "id,name,picture,likes,category,about,description,general_info,is_verified,username";
+	g_appContext.isGroupMode = isGroup;
+	param["fields"] = "id,name,picture,likes,category,about,description,general_info,is_verified,username,members.summary(true)";
 	
 	$('#tblLikedPages tr:gt(0)').remove();
 	var _api = apiPrefix + '?' + jQuery.param(param);
@@ -278,19 +282,29 @@ function processPageListResult(response)
 	$('#pnlPageSearch').show();
 	
 	$.each(response.data, function(){
-		var curRow = $('<tr>').addClass("ex-hand-cursor").click(onPageSelection).attr('pageId', this.id).attr('pageName', this.name);
+		var curRow = $('<tr>').addClass("ex-hand-cursor")
+			.click(onPageSelection)
+			.attr('pageId', this.id)
+			.attr('pageName', this.name);
 		curRow.appendTo($('#tblLikedPages'));
 		curRow.append($('<td>').append($('<img>').attr('src', this.picture.data.url)));
 
 		var nameTd = $('<td>');
 		curRow.append(nameTd);
 		nameTd.append($('<span>').html(this.name));
+
+		if (g_appContext.isGroupMode)
+		{
+			curRow.append($('<td>').text(this.members.summary.total_count));
+			curRow.append($('<td>').text(this.description));
+		}
+		else{
 		if (this.is_verified)
 			nameTd.append($('<img>').attr('src', 'verified.png'));
-		nameTd.append($('<span>').html('<br/>' + this.category + '<br/>By : ' + this.username));
-
-		curRow.append($('<td>').text(this.likes));
-		curRow.append($('<td>').text(this.about));
+			nameTd.append($('<span>').html('<br/>' + this.category + '<br/>By : ' + this.username));
+			curRow.append($('<td>').text(this.members.summary.total_count));
+			curRow.append($('<td>').text(this.description));
+		}
 		//curRow.append($('<td>').text(this.description));
 		//curRow.append($('<td>').text(this.general_info));
 	});
@@ -325,6 +339,7 @@ function onPageListPaging()
 
 function onPageSelection()
 {
+
 	g_appContext.selectedPageId = $(this).attr('pageId');
 	$('#txtSelectedPage').text($(this).attr('pageName'));
 	
@@ -336,7 +351,7 @@ function onPageSelection()
 	$('#alertNoPages').show();
 	$('#tabsDetailBody').hide();
 
-	FB.api("/" + g_appContext.selectedPageId + "/posts?fields=id,icon,message,story,picture,status_type", function(response) {
+	FB.api("/" + g_appContext.selectedPageId + "/" + (g_appContext.isGroupMode ? "feed" : "posts") + "?fields=id,icon,message,story,picture,status_type", function(response) {
 		processPostListResult(response);
 	});
 }
@@ -610,7 +625,16 @@ function onBtnPagesAdminRefreshClick()
 {
 	if (isPermGranted('manage_pages') == false)
 		FB.login(tryGetMangePosts, { scope: ['manage_pages'], return_scopes: true }); 
-	refreshLikedPages(true);
+	else
+		refreshLikedPages(true);
+}
+
+function onBtnGroupsAdminRefreshClick()
+{
+	alert('그룹 관리 기능은 준비 중입니다.');
+	//if (isPermGranted('manage_pages') == false)
+	//	FB.login(tryGetMangePosts, { scope: ['manage_pages'], return_scopes: true }); 
+	//refreshLikedPages(true);
 }
 
 function getParamMap()
@@ -644,7 +668,10 @@ function main()
 	
 	$('#btnPagesAdminRefresh').click(onBtnPagesAdminRefreshClick);
 	$('#btnPagesLikesRefresh').click(function(){refreshLikedPages(false);});
-	$('#btnPagesSearchRefresh').click(function(){refreshBySearch($('#txtSearch').val());});
+	$('#btnPagesSearchRefresh').click(function(){refreshBySearch($('#txtSearch').val(), false);});
+
+	$('#btnGroupsAdminRefresh').click(onBtnGroupsAdminRefreshClick);
+	$('#btnGroupsSearchRefresh').click(function(){refreshBySearch($('#txtSearchGroup').val(), true);});
 	
 	$('#btnLoadSummary').click(function(){getLikes();});
 	$('#btnLoadLikes').click(function(){getLikes();});
@@ -664,6 +691,7 @@ function main()
 	$('#btnChoosePost').click(function(e){e.preventDefault(); $('#myTab a[href="#tabsPosts"]').tab('show');});
 	
 	$("#txtSearch").keyup(function(event){if(event.keyCode == 13) {$("#btnPagesSearchRefresh").click();} });
+	$("#txtSearchGroup").keyup(function(event){if(event.keyCode == 13) {$("#btnGroupsSearchRefresh").click();} });
 	$("#tblLikedPages").dataTable({ paging: false, searching: false, info: false });
 
 	var locale = getParamMap()['lang'];
