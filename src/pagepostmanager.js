@@ -13,8 +13,7 @@ var g_appContext =
 	postLoader:null,
 	downloaderModal: null,
 	grantedScopes: [],
-	isGroupMode: false,
-	isGroupSelected: false
+	isGroupSearchMode: false,
 };
 
 // http://stackoverflow.com/questions/1744310/how-to-fix-array-indexof-in-javascript-for-internet-explorer-browsers
@@ -189,7 +188,7 @@ var tableToExcel = (function () {
 window.fbAsyncInit = function() {
 	FB.init({
 		appId: g_appConfig.appId,
-		version: 'v2.0'
+		version: 'v2.5'
 	});
 	
 	$('#shareBox').html('<div class="fb-like" data-href="http://kyungjaepark.com/pagepostmanager" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>');
@@ -267,7 +266,7 @@ function refreshBySearch(searchString, isGroup)
 
 function startRequestPageList(apiPrefix, param, isGroup)
 {
-	g_appContext.isGroupMode = isGroup;
+	g_appContext.isGroupSearchMode = isGroup;
 	param["fields"] = "id,name,picture,likes,category,about,description,general_info,is_verified,username,members.summary(true)";
 	
 	$('#tblLikedPages tr:gt(0)').remove();
@@ -285,7 +284,8 @@ function processPageListResult(response)
 		var curRow = $('<tr>').addClass("ex-hand-cursor")
 			.click(onPageSelection)
 			.attr('pageId', this.id)
-			.attr('pageName', this.name);
+			.attr('pageName', this.name)
+			.attr('pageOrGroup', g_appContext.isGroupSearchMode ? "group" : "page");
 		curRow.appendTo($('#tblLikedPages'));
 		curRow.append($('<td>').append($('<img>').attr('src', this.picture.data.url)));
 
@@ -293,7 +293,7 @@ function processPageListResult(response)
 		curRow.append(nameTd);
 		nameTd.append($('<span>').html(this.name));
 
-		if (g_appContext.isGroupMode)
+		if (g_appContext.isGroupSearchMode)
 		{
 			curRow.append($('<td>').text(this.members.summary.total_count));
 			curRow.append($('<td>').text(this.description));
@@ -302,8 +302,8 @@ function processPageListResult(response)
 		if (this.is_verified)
 			nameTd.append($('<img>').attr('src', 'verified.png'));
 			nameTd.append($('<span>').html('<br/>' + this.category + '<br/>By : ' + this.username));
-			curRow.append($('<td>').text(this.members.summary.total_count));
-			curRow.append($('<td>').text(this.description));
+			curRow.append($('<td>').text(this.likes));
+			curRow.append($('<td>').text(this.about));
 		}
 		//curRow.append($('<td>').text(this.description));
 		//curRow.append($('<td>').text(this.general_info));
@@ -339,7 +339,6 @@ function onPageListPaging()
 
 function onPageSelection()
 {
-
 	g_appContext.selectedPageId = $(this).attr('pageId');
 	$('#txtSelectedPage').text($(this).attr('pageName'));
 	
@@ -351,7 +350,8 @@ function onPageSelection()
 	$('#alertNoPages').show();
 	$('#tabsDetailBody').hide();
 
-	FB.api("/" + g_appContext.selectedPageId + "/" + (g_appContext.isGroupMode ? "feed" : "posts") + "?fields=id,icon,message,story,picture,status_type", function(response) {
+	var isGroup = ($(this).attr('pageOrGroup') == "group");
+	FB.api("/" + g_appContext.selectedPageId + "/" + (isGroup ? "feed" : "posts") + "?fields=id,from,admin_creator,icon,message,story,picture,likes.summary(true),status_type", function(response) {
 		processPostListResult(response);
 	});
 }
@@ -373,30 +373,28 @@ function processPostListResult(response)
 
 		postListItem = $('<td>').appendTo(postListRow);
 		postListItem.addClass("ex-hand-cursor").click(onPostSelection);
+        
 
 		var header = "[?]";
-		if (is_defined(this.status_type))
-		{
-			postListItem.addClass("warning");
-			header = "";//"[" + this.status_type + "]";
-		}
-		else
-		{
-			postListItem.css('color', 'darkgray');
-		}
+		if (is_defined(this.from))
+            header = this.from.name;
 
-		if (stringify(this.message) == "")
+        var bodytext = stringify(this.message);
+		if (bodytext == "")
 			if (is_defined(this.story))
-				header = this.story;
+				bodytext = this.story;
 		
-		var title = header + stringify(this.message);//.substring(0, 60);
-		postListItem.text(title).attr('postId', this.id).addClass("ex-overflowtd").addClass("col-md-8");
-
-		postListItem = $('<td>').appendTo(postListRow);
+        postListItem.append($('<span>').text(header + ' ').css('font-weight','bold'));
+        postListItem.append($('<span>').text('(' + this.likes.summary.total_count + ' Likes) '));
+        
 		var articleLink = $('<a>').text("[post link]")
 			.attr('href', "https://facebook.com/" + this.id.replace('_', '/posts/'))
 			.attr('target', '_blank');
 		postListItem.append(articleLink);
+        postListItem.append($('<br/>'));
+        postListItem.append($('<span>').text(bodytext).css('white-space', 'pre'));
+		postListItem.attr('postId', this.id).addClass("ex-overflowtd").addClass("col-md-8");
+
 
 	});
 	
@@ -617,14 +615,14 @@ function tryGetMangePosts(response)
 	if (checkRequiredScopeGranted(response) == false)
 		return;
 	g_appContext.grantedScopes = response.authResponse.grantedScopes;
-	if (isPermGranted('manage_pages'))
+	if (isPermGranted('pages_show_list'))
 		refreshLikedPages(true);
 }
 
 function onBtnPagesAdminRefreshClick()
 {
-	if (isPermGranted('manage_pages') == false)
-		FB.login(tryGetMangePosts, { scope: ['manage_pages'], return_scopes: true }); 
+	if (isPermGranted('pages_show_list') == false)
+		FB.login(tryGetMangePosts, { scope: ['pages_show_list'], return_scopes: true }); 
 	else
 		refreshLikedPages(true);
 }
@@ -632,8 +630,8 @@ function onBtnPagesAdminRefreshClick()
 function onBtnGroupsAdminRefreshClick()
 {
 	alert('그룹 관리 기능은 준비 중입니다.');
-	//if (isPermGranted('manage_pages') == false)
-	//	FB.login(tryGetMangePosts, { scope: ['manage_pages'], return_scopes: true }); 
+	//if (isPermGranted('pages_show_list') == false)
+	//	FB.login(tryGetMangePosts, { scope: ['pages_show_list'], return_scopes: true }); 
 	//refreshLikedPages(true);
 }
 
