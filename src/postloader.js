@@ -25,7 +25,7 @@ PostLoader.prototype.stop = function()
 PostLoader.prototype.init = function(postId, callback)
 {
 	this.postId = postId;
-	var apiString = "/" + this.postId + "?fields=id,icon,message,picture,likes.summary(1).limit(1),comments.summary(1).limit(1)";
+	var apiString = "/" + this.postId + "?fields=id,icon,message,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)";
 	var _self = this;
 	FB.api(apiString, function(response){_self.parseSummary(response, callback);});
 }
@@ -67,7 +67,7 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadLikes, loadComment
 //    this.modal.on('hidden.bs.modal', function (e) {
 		if (_self.loadLikes && _self.likesLoader.status == 0)
 		{
-			_self.likesLoader.api("/" + _self.postId + "/likes?limit=200"
+			_self.likesLoader.api("/" + _self.postId + "/likes?limit=200&fields=id,name"
 				, function(fbApiListLoader){_self.onLoaderTaskComplete();}
 				, function(fbApiListLoader){$('#prgLoadLikesInfo')._k_progressBarValue(fbApiListLoader.resultArray.length);}
 			);

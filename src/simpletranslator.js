@@ -35,7 +35,8 @@ SimpleTranslator.prototype.translate = function(locale){
 		$("#lblSbOptCommentLink").text("댓글 링크 보기");
 		$("#lblSbNoteId").text("아래 표시되는 ID는, 실제 유저 ID가 아닌 App-scoped ID입니다. 다음 설명을 참조하세요 : ");
 		$("#lblSbNoteLink").text("[링크]");
-		$("#btnExportResultTable").text("엑셀 파일로 받기 (크롬 전용)");
+		$("#btnExportResultTable").text("결과를 엑셀 파일로 받기 (크롬 전용)");
+		$("#btnShowResultTable").text("결과를 화면에 표시");
 	}
 }
 

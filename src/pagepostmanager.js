@@ -351,7 +351,7 @@ function onPageSelection()
 	$('#tabsDetailBody').hide();
 
 	var isGroup = ($(this).attr('pageOrGroup') == "group");
-	FB.api("/" + g_appContext.selectedPageId + "/" + (isGroup ? "feed" : "posts") + "?fields=id,from,admin_creator,icon,message,story,picture,likes.summary(true),status_type", function(response) {
+	FB.api("/" + g_appContext.selectedPageId + "/" + (isGroup ? "feed" : "posts") + "?fields=id,from,admin_creator,icon,message,story,picture,likes.summary(1).limit(1),status_type", function(response) {
 		processPostListResult(response);
 	});
 }
@@ -435,7 +435,7 @@ function selectPost(postId)
 	$('#txtSelectedFeed').text("temp");
 	$('#txtFeedBrief').html("");
 	
-	$('#btnExportResultTable').hide();
+	$('#divResultButtons').hide();
 	$('#alertResultsPlaceholder').show();
 
 	$('#tblShortSummary').find('tr').remove();
@@ -483,9 +483,10 @@ function getLikes()
 		stringBuilder.push("<tr><th>ID</th><th>이름</th></tr>");
 		for (var x in likesMap)
 			stringBuilder.push(String.format("<tr><td style='mso-number-format:\"\\@\"'>{0}</td><td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td></tr>", x, likesMap[x]));
-		tblResultTable.innerHTML = stringBuilder.join("");
+		$('#tblResultTable').addClass('hidden');
+        tblResultTable.innerHTML = stringBuilder.join("");
 		sorttable.makeSortable(tblResultTable);
-		$('#btnExportResultTable').show();
+		$('#divResultButtons').show();
 		$('#alertResultsPlaceholder').hide();
 	});
 }
@@ -524,9 +525,10 @@ function getComments()
 		if (chkLikes.checked)
 			likesMap = g_appContext.postLoader.getLikesMap();
 
+		$('#tblResultTable').addClass('hidden');
 		tblResultTable.innerHTML = getCommentsHtml(resultArray, likesMap, chkShowAttachment.checked, chkLikes.checked, chkCommentLink.checked);
 		sorttable.makeSortable(tblResultTable);
-		$('#btnExportResultTable').show();
+		$('#divResultButtons').show();
 		$('#alertResultsPlaceholder').hide();
 	});
 }
@@ -676,6 +678,8 @@ function main()
 	$('#btnLoadComments').click(function(){getComments();});
 
 	$('#btnExportResultTable').click(function(){tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls');});
+	$('#btnShowResultTable').click(function(){$('#tblResultTable').removeClass('hidden');});
+    
 
 	$('#tabsPostsBody').hide();
 	$('#tabsDetailBody').hide();
