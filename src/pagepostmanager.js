@@ -192,7 +192,9 @@ window.fbAsyncInit = function() {
 	});
 	
 	$('#shareBox').html('<div class="fb-like" data-href="http://kyungjaepark.com/pagepostmanager" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>');
+	$('#commentBox').html('<div class="fb-comments" data-href="http://kyungjaepark.com/pagepostmanager" data-width="470" data-num_posts="3" data-order_by="reverse_time"></div>');
 	FB.XFBML.parse(document.getElementById('shareBox'));
+	FB.XFBML.parse(document.getElementById('fb-comments'));
 };
 
 // fb init
