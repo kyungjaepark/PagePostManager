@@ -37,6 +37,7 @@ function wireEvents() {
     $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
     $('#btn-board-search-again').click(onBtnBoardSearchAgainClick);
+    $('#btn-board-post-list-more').click(onBtnBoardPostListMoreClick);
 }
 
 function onFbInitialized() {
@@ -212,8 +213,77 @@ function board_loadSuccess() {
     $('#board-name').text(String.format('[{0}] {1}의 게시물:',
         g_appContext.boardInfo.name,
         (g_appContext.boardInfo.type == 'group' ? '그룹' : '페이지')));
+
+    $('#tbl-board-post-list tr:gt(0)').remove();
+    var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
+    FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
+        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),status_type' },
+        function (response) {
+            board_processResult(response);
+        });
+
 }
 
 function onBtnBoardSearchAgainClick() {
     searchPage_start();
 }
+
+function board_processResult(response) {
+    $.each(response.data, function () {
+        var curRow = $('<tr>')
+            .addClass("ex-hand-cursor")
+            .click(board_onPostSelection)
+            .attr('id', this.id)
+            .appendTo($('#tbl-board-post-list'));
+        
+        // image    
+        $('<td>')
+            .append($('<img>').attr('src', this.picture).css('max-width', '150px').addClass("img-responsive"))
+            .appendTo(curRow);
+
+        // text
+        var nameTd = $('<td>');
+        nameTd.addClass('text-left');
+
+        var header = "[?]";
+        if (is_defined(this.from))
+            header = this.from.name;
+        nameTd.append($('<strong>').text(header));
+        nameTd.append($('<br/>'));
+
+        nameTd.append($('<strong>').addClass('small').text(numberWithCommas(this.likes.summary.total_count) + ' Likes'));
+        nameTd.append($('<br/>'));
+
+        var bodytext = stringify(this.message);
+        if (bodytext == "")
+            if (is_defined(this.story))
+                bodytext = this.story;
+        nameTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(bodytext));
+        nameTd.append($('<br/>'));
+
+        nameTd.appendTo(curRow);
+    });
+
+    if ($('#tbl-board-post-list tr:gt(0)').length > 0)
+        $('#board-post-list').removeClass('hidden');
+
+    var moreButton = $('#btn-board-post-list-more');
+    moreButton.addClass('hidden');
+    moreButton.prop('disabled', true);
+    if (is_defined(response.paging)) {
+        if (is_defined(response.paging.next)) {
+            moreButton.attr('api', response.paging.next);
+            moreButton.removeClass('hidden');
+            moreButton.prop('disabled', false);
+        }
+    }
+}
+function onBtnBoardPostListMoreClick() {
+    $(this).prop('disabled', true);
+    FB.api($(this).attr('api'), function (response) { board_processResult(response); });
+}
+function board_onPostSelection() {
+    // TODO
+    console.log($(this).attr('id'));
+}
+

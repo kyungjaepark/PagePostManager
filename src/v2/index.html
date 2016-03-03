@@ -103,15 +103,22 @@
                 <br/>
                 <span id='board-name'>게시물 목록</span><br/>
                 <br/>
-                <pre>
-이하 기능은 아직 구현되지 않았습니다.
+                <div id="board-post-list" class='hidden'>
+                    <table id="tbl-board-post-list" class="table table-bordered table-hover table-striped" style='margin:auto; max-width:600px'>
+                        <thead>
+                            <tr>
+                                <td>Image</td>
+                                <td>Info</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                     <br/>
+                   <input type="button" class="btn btn-default btn-sm" id="btn-board-post-list-more" value="더 보기" />
+                    <br/>
+                    <br/>
+                </div>
 
-PagePostManager v2 남은 작업 :
-1. 게시물 목록 가져오기
-2. 추출하기
-3. 주소 창으로부터 페이지/그룹, 게시물 읽는 처리
-                </pre>
-                
             </div>
 
             <script src="simpletranslator.js"></script>
