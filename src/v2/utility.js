@@ -52,7 +52,6 @@ jQuery.fn.extend({
 });
 
 // http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
-// First, checks if it isn't implemented yet.
 if (!String.format) {
   String.format = function(format) {
     var args = Array.prototype.slice.call(arguments, 1);
@@ -63,6 +62,13 @@ if (!String.format) {
       ;
     });
   };
+}
+
+// http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
 }
 
 function is_defined(obj)

@@ -1,15 +1,12 @@
 function SimpleTranslator() {
-	this.reset();
 }
 
-SimpleTranslator.prototype.reset = function(){
-}
+SimpleTranslator.prototype.translate = function (locale) {
+    if (typeof locale === 'undefined')
+        locale = window.navigator.userLanguage || window.navigator.language;
 
-SimpleTranslator.prototype.translate = function(locale){
-
-	if (locale == 'ko' || locale == 'koKR' || locale == 'ko-KR')
-	{
-		$("#welcome").text('환영합니다 :: v2.');
-	}
+    if (locale == 'ko' || locale == 'koKR' || locale == 'ko-KR') {
+        $("#welcome").text('환영합니다 :: v2.');
+    }
 }
 
