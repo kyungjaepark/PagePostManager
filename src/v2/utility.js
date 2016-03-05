@@ -9,48 +9,6 @@ if (!Array.prototype.indexOf) {
     }
 }
 
-// utility functions
-jQuery.fn.extend({
-	_k_makeHyperLink: function(fn) {
-		var ret = this.css("textDecoration", "underline").css("cursor", "pointer");
-		if (is_defined(fn))
-			ret = ret.click(fn);
-		return ret;
-	},
-	
-	_k_progressBarValue: function(value) {
-		var ret = this.attr('aria-valuenow', value);
-		recalcProgressBar(this);
-		return ret;
-	},
-	
-	_k_progressBarMax: function(value) {
-		var ret = this.attr('aria-valuemax', value);
-		recalcProgressBar(this);
-		return ret;
-	},
-	
-	_k_debugVisualizeObj: function(obj) {
-		var _tbl = $('<table border=1>');
-		this.append(_tbl);
-
-		for (var t in obj)
-		{
-			var _tr = $('<tr>');
-			_tbl.append(_tr);
-			
-			_tr.append($('<td>').text(t));
-			var _valueTd = $('<td>');
-			_tr.append(_valueTd);
-			if (typeof obj[t] == "object")
-				_valueTd._k_debugVisualizeObj(obj[t]);
-			else
-				_valueTd.text(obj[t]);
-		}
-		return this;
-	}
-});
-
 // http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
 if (!String.format) {
   String.format = function(format) {

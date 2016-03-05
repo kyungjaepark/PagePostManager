@@ -50,13 +50,13 @@ var fbmanager = {
                     FB.api('/me', function (response) {
                         if (typeof response.name !== 'undefined')
                             self.user.name = response.name;
-                        refreshPermissionCallback();
+                        refreshPermissionCallback(response);
                     });
                 });
             } else if (response.status === 'not_authorized') {
-                refreshPermissionCallback();
+                refreshPermissionCallback(response);
             } else {
-                refreshPermissionCallback();
+                refreshPermissionCallback(response);
             }
         });
     },

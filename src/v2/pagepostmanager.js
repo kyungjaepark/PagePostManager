@@ -15,6 +15,8 @@ var g_appContext =
             type: 'page',
             name: '',
         },
+        postLoader: null,
+        postDownloaderModal: null,
     }
 
 function switchPage(pageName) {
@@ -25,6 +27,7 @@ $().ready(function () { main(); });
 
 function main() {
     wireEvents();
+    wireEvents_post();    
     switchPage('loading');
     new SimpleTranslator().translate(getParamMap()['lang']);
     fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
@@ -41,6 +44,12 @@ function wireEvents() {
 }
 
 function onFbInitialized() {
+
+    $('#shareBox').html('<div class="fb-like" data-href="http://kyungjaepark.com/pagepostmanager" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>');
+    $('#commentBox').html('<div class="fb-comments" data-href="http://kyungjaepark.com/pagepostmanager" data-width="470" data-num_posts="3" data-order_by="reverse_time"></div>');
+    FB.XFBML.parse(document.getElementById('shareBox'));
+    FB.XFBML.parse(document.getElementById('fb-comments'));
+
     switchPage('welcome');
     processBasicLogin();
 }
@@ -180,6 +189,7 @@ function onBtnPageSearchResultMoreClick() {
     $(this).prop('disabled', true);
     FB.api($(this).attr('api'), function (response) { searchPage_processResult(response); });
 }
+
 function searchPage_onPageSelection() {
     trySetupBoard($(this).attr('id'), board_loadSuccess, function () {
         // TODO
@@ -194,16 +204,14 @@ function trySetupBoard(boardId, successCallback, failCallback) {
             fields: "id,metadata{type},name",
         },
         function (response) {
-            if (is_defined(response.error)) {
-                if (is_defined(failCallback))
-                    failCallback();
+            if (is_defined(response.error) && is_defined(failCallback)) {
+                failCallback(response);
+                return;
             }
-            else {
-                g_appContext.boardInfo.id = response.id;
-                g_appContext.boardInfo.type = response.metadata.type;
-                g_appContext.boardInfo.name = response.name;
-                successCallback();
-            }
+            g_appContext.boardInfo.id = response.id;
+            g_appContext.boardInfo.type = response.metadata.type;
+            g_appContext.boardInfo.name = response.name;
+            successCallback(response);
         }
         );
 }
@@ -283,7 +291,9 @@ function onBtnBoardPostListMoreClick() {
     FB.api($(this).attr('api'), function (response) { board_processResult(response); });
 }
 function board_onPostSelection() {
-    // TODO
-    console.log($(this).attr('id'));
+    trySetupPost($(this).attr('id'), post_loadSuccess, function () {
+        // TODO
+        alert('정보를 읽어오는 데 실패했습니다. 새로고침 후 다시 시도해 주세요.');
+    });
 }
 

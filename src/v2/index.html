@@ -16,6 +16,7 @@
 
     <script src="./lib/jquery/jquery-1.12.1.min.js"></script>
     <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./lib/sorttable/sorttable.js"></script>
 
     <meta property="fb:app_id" content="624861190962222" />
     <meta property="og:image" content="http://kyungjaepark.com/pagepostmanager/pagepostmanager.png" />
@@ -87,8 +88,8 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-                     <br/>
-                   <input type="button" class="btn btn-default btn-sm" id="btn-search-result-more" value="더 보기" />
+                    <br/>
+                    <input type="button" class="btn btn-default btn-sm" id="btn-search-result-more" value="더 보기" />
                     <br/>
                     <br/>
                 </div>
@@ -101,7 +102,8 @@
                 <button class="btn btn-default btn-sm" id='btn-board-search-again'>페이지/그룹 검색으로 돌아가기</button>
                 <br/>
                 <br/>
-                <span id='board-name'>게시물 목록</span><br/>
+                <span id='board-name'>게시물 목록</span>
+                <br/>
                 <br/>
                 <div id="board-post-list" class='hidden'>
                     <table id="tbl-board-post-list" class="table table-bordered table-hover table-striped" style='margin:auto; max-width:600px'>
@@ -113,18 +115,116 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-                     <br/>
-                   <input type="button" class="btn btn-default btn-sm" id="btn-board-post-list-more" value="더 보기" />
+                    <br/>
+                    <input type="button" class="btn btn-default btn-sm" id="btn-board-post-list-more" value="더 보기" />
                     <br/>
                     <br/>
                 </div>
-
             </div>
+
+            <div id='page-post' class='app-pages'>
+
+                <table id="tblShortSummary" class="table table-bordered table-hover text-left" style='margin:auto; max-width:600px'></table>
+                <br/>
+                <table style='margin:auto; max-width:600px' class='text-left'>
+                    <tr>
+                        <td>
+                            <button id="btnLoadLikes" class="btn btn-default">Get Likes</button>
+                            <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
+                            <br/>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkShowAttachment" checked><span id="lblSbOptAtt">Include Attachments</span>
+                            </label>
+                            <br/>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkLikes"><span id="lblSbOptPostLikes">Include PostLikes</span>
+                            </label>
+                            <br/>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCommentLink"><span id="lblSbOptCommentLink">Show Comment Link</span>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <span id="lblSbNoteId">Note : User ID in the result table is user's app-scoped ID, not real ID. For further information, please check </span>
+                <a href="https://developers.facebook.com/docs/apps/upgrading#upgrading_v2_0_user_ids" target="_blank" id="lblSbNoteLink">this article</a>.
+                <br/>
+                <br/>
+                <div id="divResultButtons">
+                    <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only)</button>
+                    <br/>
+                    <button id="btnShowResultTable" class="btn btn-info" style='margin-top:5px'>Show Result Table</button>
+                </div>
+                <br/>
+                <div class='text-left' style='margin:20px'>
+                    <table id="tblResultTable" class="table table-bordered table-hover"></table>
+                </div>
+            </div>
+
+            <div id="divFooter" class="container theme-showcase" role="main">
+                <div id="shareBox"></div>
+                <br/>
+                <div style='text-align:center'>
+
+                    <div id="commentBox"></div>
+                    <br/>
+                    <br/>
+                    <a class="btn btn-large btn-default" href="/">Home</a>
+                </div>
+            </div>
+
+
+            <div id="fb-root"></div>
+
+            <!-- Modal, for post loader -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Extracting...</h4>
+                        </div>
+                        <div class="modal-body">
+                            Likes
+                            <br/>
+                            <div class="progress">
+                                <div id="prgLoadLikesInfo" class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"
+                                style="width: 2%;">
+                                    2%
+                                </div>
+                            </div>
+
+                            <div id="prgLoadLikesInfoX"></div>
+                            <br/> Comments
+                            <br/>
+                            <div class="progress">
+                                <div id="prgLoadCommentsInfo" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    0%
+                                </div>
+                            </div>
+                            <div id="prgLoadCommentsInfoX"></div>
+                            <br/>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Hide</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- http://stackoverflow.com/questions/17126453/html-table-to-excel-javascript -->
+            <a id="dlink" style="display:none;"></a>
+
 
             <script src="simpletranslator.js"></script>
             <script src="utility.js"></script>
             <script src="fbmanager.js"></script>
+            <script src="fbapilistloader.js"></script>
+            <script src="postloader.js"></script>
             <script src="pagepostmanager.js"></script>
+            <script src="pagepostmanager_post.js"></script>
 
     </body>
 
