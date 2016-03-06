@@ -23,7 +23,7 @@
     <meta property="og:title" content="Page Post Manager / 페이지 게시물 매니저" />
     <meta property="og:description" content="Get likes and comments of post in a single click! / 게시물의 좋아요와 댓글 목록을 클릭 한번에!" />
 
-    <body>
+    <body style='display:none'>
         <div class="alert alert-info text-center" role="alert">
             <strong>PagePostManager V2</strong>
             <br/> 페이스북 페이지 게시물 좋아요 / 댓글 추출 도구입니다.
@@ -123,6 +123,10 @@
             </div>
 
             <div id='page-post' class='app-pages'>
+                <button class="btn btn-default btn-sm" id='btn-board-search-again'>페이지/그룹 검색으로 돌아가기</button>
+                <button class="btn btn-default btn-sm" id='btn-goto-post-list'>게시물 목록으로 돌아가기</button>
+                <br/>
+                <br/>
 
                 <table id="tblShortSummary" class="table table-bordered table-hover text-left" style='margin:auto; max-width:600px'></table>
                 <br/>
@@ -155,6 +159,8 @@
                     <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only)</button>
                     <br/>
                     <button id="btnShowResultTable" class="btn btn-info" style='margin-top:5px'>Show Result Table</button>
+                    <br/>
+                    <button id="btnShowResultTableNewWindow" class="btn btn-info" style='margin-top:5px'>새 창에 결과 테이블 표시</button>
                 </div>
                 <br/>
                 <div class='text-left' style='margin:20px'>

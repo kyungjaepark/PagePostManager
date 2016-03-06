@@ -90,24 +90,26 @@ function trySetupPost(postId, successCallback, failCallback) {
             $('<td>').appendTo(_tr).text('Text').addClass("col-md-6");
         }
         {
-            var post_image_td = $('<td>');
-            if (is_defined(response.picture))
-                post_image_td.append($('<img>').attr('src', response.picture).addClass("img-responsive")).append('<br>');
+            generatePostInfoTr(response)
+                .appendTo($('#tblShortSummary'));
+            // var post_image_td = $('<td>');
+            // if (is_defined(response.picture))
+            //     post_image_td.append($('<img>').attr('src', response.picture).addClass("img-responsive")).append('<br>');
 
-            var title = stringify(response.message);
-            if (is_defined(response.story))
-                title = stringify(response.story);
-            var post_body_td = $('<td>');
-            post_body_td.append($('<span>').text("Likes : " + g_appContext.postLoader.likesCount));
-            post_body_td.append($('<br>'));
-            post_body_td.append($('<span>').text("Comments : " + g_appContext.postLoader.commentsCount));
-            post_body_td.append($('<br>'));
-            post_body_td.append($('<br>'));
-            post_body_td.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(title));
+            // var title = stringify(response.message);
+            // if (is_defined(response.story))
+            //     title = stringify(response.story);
+            // var post_body_td = $('<td>');
+            // post_body_td.append($('<span>').text("Likes : " + g_appContext.postLoader.likesCount));
+            // post_body_td.append($('<br>'));
+            // post_body_td.append($('<span>').text("Comments : " + g_appContext.postLoader.commentsCount));
+            // post_body_td.append($('<br>'));
+            // post_body_td.append($('<br>'));
+            // post_body_td.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(title));
 
-            $('<tr>').appendTo($('#tblShortSummary'))
-                .append(post_image_td)
-                .append(post_body_td);
+            // $('<tr>').appendTo($('#tblShortSummary'))
+            //     .append(post_image_td)
+            //     .append(post_body_td);
         }
         successCallback(response);
     }, failCallback);
@@ -264,4 +266,16 @@ function wireEvents_post() {
     $('#btnLoadComments').click(function () { getComments(); });
     $('#btnExportResultTable').click(function () { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
     $('#btnShowResultTable').click(function () { $('#tblResultTable').removeClass('hidden'); });
+    $('#btnShowResultTableNewWindow').click(function () { writeToNewTable(); });
+}
+
+function writeToNewTable() {
+    var w = window.open();
+    var new_body = $('<body>');
+    $('#tblResultTable')
+        .clone()
+        .attr('border', '1')
+        .appendTo(new_body);
+    $(w.document.head).html('<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>');
+    $(w.document.body).html(new_body.html());
 }

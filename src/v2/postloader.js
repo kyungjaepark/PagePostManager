@@ -22,15 +22,17 @@ PostLoader.prototype.stop = function () {
 
 PostLoader.prototype.init = function (postId, successCallback, failCallback) {
     this.postId = postId;
-    var apiString = "/" + this.postId + "?fields=id,icon,message,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)";
     var _self = this;
-    FB.api(apiString, function (response) {
-        if (is_defined(response.error) && is_defined(failCallback)) {
-            failCallback(response);
-            return;
-        }
-        _self.parseSummary(response, successCallback);
-    });
+    FB.api(
+        "/" + this.postId,
+        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' },
+        function (response) {
+            if (is_defined(response.error) && is_defined(failCallback)) {
+                failCallback(response);
+                return;
+            }
+            _self.parseSummary(response, successCallback);
+        });
 }
 
 PostLoader.prototype.parseSummary = function (response, callback) {

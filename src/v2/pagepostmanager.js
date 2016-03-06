@@ -22,12 +22,14 @@ var g_appContext =
 function switchPage(pageName) {
     $('.app-pages').addClass('hidden');
     $('#page-' + pageName).removeClass('hidden');
+    $('html,body').scrollTop(0);
 }
 $().ready(function () { main(); });
 
 function main() {
+    $('body').css('display','');
     wireEvents();
-    wireEvents_post();    
+    wireEvents_post();
     switchPage('loading');
     new SimpleTranslator().translate(getParamMap()['lang']);
     fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
@@ -40,6 +42,7 @@ function wireEvents() {
     $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
     $('#btn-board-search-again').click(onBtnBoardSearchAgainClick);
+    $('#btn-goto-post-list').click(onBtnGotoPostListClick);
     $('#btn-board-post-list-more').click(onBtnBoardPostListMoreClick);
 }
 
@@ -147,27 +150,27 @@ function searchPage_processResult(response) {
             .appendTo(curRow);
 
         // text
-        var nameTd = $('<td>');
-        nameTd.addClass('text-left');
-        nameTd.append($('<strong>').text(this.name));
+        var textTd = $('<td>');
+        textTd.addClass('text-left');
+        textTd.append($('<strong>').text(this.name));
 
         if (g_appContext.searchType == 'group') {
-            nameTd.append($('<br/>'));
-            nameTd.append($('<strong>').addClass('small').text(numberWithCommas(this.members.summary.total_count) + ' Likes'));
-            nameTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(this.description));
+            textTd.append($('<br/>'));
+            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.members.summary.total_count) + ' Likes'));
+            textTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(this.description));
         }
         else {
             if (this.is_verified)
-                nameTd.append(verified_img.clone());
-            nameTd.append($('<br/>'));
-            nameTd.append($('<strong>').addClass('small').text(numberWithCommas(this.likes) + ' Likes'));
-            nameTd.append($('<br/>'));
-            nameTd.append($('<small>').text(this.category));
-            nameTd.append($('<br/>'));
-            nameTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(this.about));
+                textTd.append(verified_img.clone());
+            textTd.append($('<br/>'));
+            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.likes) + ' Likes'));
+            textTd.append($('<br/>'));
+            textTd.append($('<small>').text(this.category));
+            textTd.append($('<br/>'));
+            textTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(this.about));
         }
 
-        nameTd.appendTo(curRow);
+        textTd.appendTo(curRow);
     });
 
     if ($('#tbl-page-search-result tr:gt(0)').length > 0)
@@ -225,7 +228,7 @@ function board_loadSuccess() {
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
-        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),status_type' },
+        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' },
         function (response) {
             board_processResult(response);
         });
@@ -236,40 +239,61 @@ function onBtnBoardSearchAgainClick() {
     searchPage_start();
 }
 
+function onBtnGotoPostListClick() {
+    switchPage('board');
+}
+
+function generatePostInfoTr(responseData) {
+    var curRow = $('<tr>');
+        
+    // image    
+    $('<td>')
+        .append($('<img>').attr('src', responseData.picture).css('max-width', '150px').addClass("img-responsive"))
+        .appendTo(curRow);
+
+    // text
+    var textTd = $('<td>');
+    textTd.addClass('text-left');
+
+    var header = "[?]";
+    if (is_defined(responseData.from))
+        header = responseData.from.name;
+    textTd.append($('<strong>').text(header));
+    textTd.append($('<br/>'));
+
+    $('<strong>')
+        .addClass('small')
+        .text(numberWithCommas(responseData.likes.summary.total_count) + ' Likes')
+        .appendTo(textTd);
+    $('<br/>').appendTo(textTd);
+    $('<strong>')
+        .addClass('small')
+        .text(numberWithCommas(responseData.comments.summary.total_count) + ' Comments')
+        .appendTo(textTd);
+    $('<br/>').appendTo(textTd);
+
+    var bodytext = stringify(responseData.message);
+    if (bodytext == "" && is_defined(responseData.story))
+        bodytext = responseData.story;
+    $('<pre>')
+        .css('background-color', 'lightyellow')
+        .css('white-space', 'pre-line')
+        .text(bodytext)
+        .appendTo(textTd);
+    $('<br/>').appendTo(textTd);
+
+    textTd.appendTo(curRow);
+
+    return curRow;
+}
+
 function board_processResult(response) {
     $.each(response.data, function () {
-        var curRow = $('<tr>')
+        generatePostInfoTr(this)
             .addClass("ex-hand-cursor")
             .click(board_onPostSelection)
             .attr('id', this.id)
             .appendTo($('#tbl-board-post-list'));
-        
-        // image    
-        $('<td>')
-            .append($('<img>').attr('src', this.picture).css('max-width', '150px').addClass("img-responsive"))
-            .appendTo(curRow);
-
-        // text
-        var nameTd = $('<td>');
-        nameTd.addClass('text-left');
-
-        var header = "[?]";
-        if (is_defined(this.from))
-            header = this.from.name;
-        nameTd.append($('<strong>').text(header));
-        nameTd.append($('<br/>'));
-
-        nameTd.append($('<strong>').addClass('small').text(numberWithCommas(this.likes.summary.total_count) + ' Likes'));
-        nameTd.append($('<br/>'));
-
-        var bodytext = stringify(this.message);
-        if (bodytext == "")
-            if (is_defined(this.story))
-                bodytext = this.story;
-        nameTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(bodytext));
-        nameTd.append($('<br/>'));
-
-        nameTd.appendTo(curRow);
     });
 
     if ($('#tbl-board-post-list tr:gt(0)').length > 0)
