@@ -1,4 +1,3 @@
-
 var g_appConfig =
     {
         basicPermissions: ['public_profile'],
@@ -80,6 +79,8 @@ function onBasicLoginComplete() {
     g_appContext.initialized = true;
     searchPage_start();
 }
+
+// search ----------------------------------------------------------------------
 
 function searchPage_start() {
     switchPage('search');
@@ -199,6 +200,8 @@ function searchPage_onPageSelection() {
         alert('정보를 읽어오는 데 실패했습니다. 새로고침 후 다시 시도해 주세요.');
     });
 }
+
+// board -----------------------------------------------------------------------
 
 function trySetupBoard(boardId, successCallback, failCallback) {
     FB.api('/' + boardId,
@@ -321,3 +324,108 @@ function board_onPostSelection() {
     });
 }
 
+// post (todo) -----------------------------------------------------------------
+
+jQuery.fn.extend({
+    _k_progressBarValue: function (value) {
+        var ret = this.attr('aria-valuenow', value);
+        recalcProgressBar(this);
+        return ret;
+    },
+
+    _k_progressBarMax: function (value) {
+        var ret = this.attr('aria-valuemax', value);
+        recalcProgressBar(this);
+        return ret;
+    },
+});
+
+function recalcProgressBar(progressBar) {
+    var result = 0;
+    if (progressBar.attr('aria-valuemax') > 0)
+        result = Math.floor(progressBar.attr('aria-valuenow') / progressBar.attr('aria-valuemax') * 100);
+    progressBar.css('width', result + '%')
+    progressBar.text(result + "% (" + progressBar.attr('aria-valuenow') + " / " + progressBar.attr('aria-valuemax') + ")");
+}
+
+function trySetupPost(postId, successCallback, failCallback) {
+
+    if (g_appContext.postLoader !== null)
+        g_appContext.postLoader.stop();
+    g_appContext.postLoader = new PostLoader();
+
+    if (g_appContext.postDownloaderModal == null) {
+        g_appContext.postDownloaderModal = $('#myModal').modal({
+            keyboard: false,
+            show: false
+        });
+    }
+
+    g_appContext.postLoader.init(postId, function (response) {
+        $('#tblShortSummary').find('tr').remove();
+        $('#tblResultTable').find('tr').remove();
+
+        var _tr = $('<tr>').appendTo($('#tblShortSummary'));
+        $('<td>').appendTo(_tr).text('Image');
+        $('<td>').appendTo(_tr).text('Text');
+        $('#tblShortSummary').append(generatePostInfoTr(response));
+        successCallback(response);
+    }, failCallback);
+}
+
+function post_loadSuccess() {
+    switchPage('post');
+
+    $('#divResultButtons').hide();
+    $('#alertResultsPlaceholder').show();
+}
+
+function getLikes() {
+    $('#tblResultTable').find('tr').remove();
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function () {
+        $('#tblResultTable').addClass('hidden');
+        tblResultTable.innerHTML = generateLikesHtml(g_appContext.postLoader.getLikesMap());
+        sorttable.makeSortable(tblResultTable);
+        $('#divResultButtons').show();
+        $('#alertResultsPlaceholder').hide();
+    });
+}
+
+function getComments() {
+    $('#tblResultTable').find('tr').remove();
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkLikes.checked, true, function () {
+        var results = g_appContext.postLoader.commentsLoader.resultArray;
+        var likesMap = {};
+        if (chkLikes.checked)
+            likesMap = g_appContext.postLoader.getLikesMap();
+
+        $('#tblResultTable').find('tr').remove();
+        $('#tblResultTable').addClass('hidden');
+        tblResultTable.innerHTML = getCommentsHtml(results, likesMap, chkShowAttachment.checked, chkLikes.checked, chkCommentLink.checked);
+        sorttable.makeSortable(tblResultTable);
+        $('#divResultButtons').show();
+        $('#alertResultsPlaceholder').hide();
+    });
+}
+
+function wireEvents_post() {
+    $("#prgLoadLikesInfo")._k_progressBarValue(0);
+    $("#prgLoadCommentsInfo")._k_progressBarValue(0);
+    $('#btnLoadSummary').click(function () { getLikes(); });
+    $('#btnLoadLikes').click(function () { getLikes(); });
+    $('#btnLoadComments').click(function () { getComments(); });
+    $('#btnExportResultTable').click(function () { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
+    $('#btnShowResultTable').click(function () { $('#tblResultTable').removeClass('hidden'); });
+    $('#btnShowResultTableNewWindow').click(function () { writeToNewTable(); });
+}
+
+function writeToNewTable() {
+    var w = window.open();
+    var new_body = $('<body>');
+    $('#tblResultTable')
+        .clone()
+        .attr('border', '1')
+        .appendTo(new_body);
+    $(w.document.head).html('<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>');
+    $(w.document.body).html(new_body.html());
+}
