@@ -30,7 +30,8 @@ function main() {
     wireEvents();
     wireEvents_post();
     switchPage('loading');
-    new SimpleTranslator().translate(getParamMap()['lang']);
+    SimpleTranslator.init(getParamMap()['lang'])
+    SimpleTranslator.translate();
     fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
 }
 
@@ -41,6 +42,7 @@ function wireEvents() {
     $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
     $('#btn-board-search-again').click(onBtnBoardSearchAgainClick);
+    $('#btn-goto-search').click(onBtnGotoSearchClick);
     $('#btn-goto-post-list').click(onBtnGotoPostListClick);
     $('#btn-board-post-list-more').click(onBtnBoardPostListMoreClick);
 }
@@ -197,7 +199,7 @@ function onBtnPageSearchResultMoreClick() {
 function searchPage_onPageSelection() {
     trySetupBoard($(this).attr('id'), board_loadSuccess, function () {
         // TODO
-        alert('정보를 읽어오는 데 실패했습니다. 새로고침 후 다시 시도해 주세요.');
+        alert(SimpleTranslator.getKey('fatal_error'));
     });
 }
 
@@ -224,9 +226,9 @@ function trySetupBoard(boardId, successCallback, failCallback) {
 
 function board_loadSuccess() {
     switchPage('board');
-    $('#board-name').text(String.format('[{0}] {1}의 게시물:',
+    $('#board-name').text(String.format(SimpleTranslator.getKey('post_list_title_format'),
         g_appContext.boardInfo.name,
-        (g_appContext.boardInfo.type == 'group' ? '그룹' : '페이지')));
+        SimpleTranslator.getKey(g_appContext.boardInfo.type == 'group' ? 'group' : 'page')));
 
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
@@ -235,10 +237,13 @@ function board_loadSuccess() {
         function (response) {
             board_processResult(response);
         });
-
 }
 
 function onBtnBoardSearchAgainClick() {
+    searchPage_start();
+}
+
+function onBtnGotoSearchClick() {
     searchPage_start();
 }
 
