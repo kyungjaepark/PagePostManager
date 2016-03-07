@@ -26,18 +26,21 @@ function switchPage(pageName) {
 $().ready(function () { main(); });
 
 function main() {
-    $('body').css('display','');
+    $('body').css('display', '');
     wireEvents();
     wireEvents_post();
     switchPage('loading');
     SimpleTranslator.init(getParamMap()['lang'])
     SimpleTranslator.translate();
+    if (getParamMap()['fb_review'] == 'true')
+        $('#btn-search-my-groups').prop('disabled', false);
     fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
 }
 
 function wireEvents() {
     $('#btn-basic-login').click(onBtnBasicLoginClick);
     $('#btn-search-my-pages').click(onBtnSearchMyPagesClick);
+    $('#btn-search-my-groups').click(onBtnSearchMyGroupsClick);
     $('#btn-search-page').click(onBtnSearchPageClick);
     $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
@@ -100,6 +103,28 @@ function onBtnSearchMyPagesClick() {
         searchPage_startRequest('/me/accounts', {}, 'page');
     }
     var extraPermissions = ['pages_show_list'];
+    var lackingPermission = fbmanager.checkForLackingPermission(extraPermissions);
+    if (lackingPermission.length == 0) {
+        onSuccess();
+    }
+    else {
+        FB.login(function (response) {
+            fbmanager.refreshPermission(function () {
+                if (fbmanager.checkForLackingPermission(lackingPermission).length == 0)
+                    onSuccess();
+                else {
+                    // TODO: 실패 안내 메시지
+                }
+            });
+        }, { scope: lackingPermission, return_scopes: true });
+    }
+}
+
+function onBtnSearchMyGroupsClick() {
+    function onSuccess() {
+        searchPage_startRequest('/me/groups', {}, 'group');
+    }
+    var extraPermissions = ['user_managed_groups'];
     var lackingPermission = fbmanager.checkForLackingPermission(extraPermissions);
     if (lackingPermission.length == 0) {
         onSuccess();
