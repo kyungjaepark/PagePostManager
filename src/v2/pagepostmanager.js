@@ -16,6 +16,7 @@ var g_appContext =
         },
         postLoader: null,
         postDownloaderModal: null,
+        currentFragment: undefined, // aka 'hash'
     }
 
 function switchPage(pageName) {
@@ -48,6 +49,44 @@ function wireEvents() {
     $('#btn-goto-search').click(onBtnGotoSearchClick);
     $('#btn-goto-post-list').click(onBtnGotoPostListClick);
     $('#btn-board-post-list-more').click(onBtnBoardPostListMoreClick);
+    $(window).bind('hashchange', applyFragmentValue);
+}
+
+function applyFragmentValue() {
+    if (g_appContext.initialized == false)
+        return;
+    var hashValue = location.hash || '';
+    if (hashValue.substr(0, 1) == '#')
+        hashValue = hashValue.substr(1);
+    if (g_appContext.currentFragment === hashValue)
+        return;
+    g_appContext.currentFragment = hashValue;
+
+    if (hashValue.indexOf("board:") == 0) {
+        trySetupBoard(
+            hashValue.substr(6),
+            board_loadSuccess,
+            function () {
+                alert(SimpleTranslator.getKey('fatal_error')); // TODO
+            });
+        return;
+    }
+    if (hashValue.indexOf("post:") == 0) {
+        trySetupPost(
+            hashValue.substr(5),
+            post_loadSuccess,
+            function () {
+                alert(SimpleTranslator.getKey('fatal_error')); // TODO
+            });
+        return;
+    }
+
+    searchPage_start();
+    return;
+}
+
+function setCommandFragment(fragment) {
+    location.hash = fragment;
 }
 
 function onFbInitialized() {
@@ -82,7 +121,7 @@ function onBtnBasicLoginClick() {
 
 function onBasicLoginComplete() {
     g_appContext.initialized = true;
-    searchPage_start();
+    applyFragmentValue();
 }
 
 // search ----------------------------------------------------------------------
@@ -171,8 +210,8 @@ function searchPage_processResult(response) {
             .click(searchPage_onPageSelection)
             .attr('id', this.id)
             .appendTo($('#tbl-page-search-result'));
-        
-        // image    
+
+        // image
         $('<td>')
             .append($('<img>').attr('src', this.picture.data.url))
             .appendTo(curRow);
@@ -222,10 +261,7 @@ function onBtnPageSearchResultMoreClick() {
 }
 
 function searchPage_onPageSelection() {
-    trySetupBoard($(this).attr('id'), board_loadSuccess, function () {
-        // TODO
-        alert(SimpleTranslator.getKey('fatal_error'));
-    });
+    setCommandFragment("board:" + $(this).attr('id'));
 }
 
 // board -----------------------------------------------------------------------
@@ -265,21 +301,21 @@ function board_loadSuccess() {
 }
 
 function onBtnBoardSearchAgainClick() {
-    searchPage_start();
+    setCommandFragment('');
 }
 
 function onBtnGotoSearchClick() {
-    searchPage_start();
+    setCommandFragment('');
 }
 
 function onBtnGotoPostListClick() {
-    switchPage('board');
+    setCommandFragment('board:' + g_appContext.boardInfo.id);
 }
 
 function generatePostInfoTr(responseData) {
     var curRow = $('<tr>');
-        
-    // image    
+
+    // image
     $('<td>')
         .append($('<img>').attr('src', responseData.picture).css('max-width', '150px').addClass("img-responsive"))
         .appendTo(curRow);
@@ -348,10 +384,7 @@ function onBtnBoardPostListMoreClick() {
     FB.api($(this).attr('api'), function (response) { board_processResult(response); });
 }
 function board_onPostSelection() {
-    trySetupPost($(this).attr('id'), post_loadSuccess, function () {
-        // TODO
-        alert('정보를 읽어오는 데 실패했습니다. 새로고침 후 다시 시도해 주세요.');
-    });
+    setCommandFragment("post:" + $(this).attr('id'));
 }
 
 // post (todo) -----------------------------------------------------------------
@@ -405,7 +438,9 @@ function trySetupPost(postId, successCallback, failCallback) {
 
 function post_loadSuccess() {
     switchPage('post');
-
+    $('#btn-goto-post-list').addClass('hidden');
+    if (g_appContext.boardInfo.id != 0)
+        $('#btn-goto-post-list').removeClass('hidden');
     $('#divResultButtons').hide();
     $('#alertResultsPlaceholder').show();
 }
