@@ -56,6 +56,8 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadLikes, loadComment
     var commentsLoaded = (this.commentsLoader.status == 2);
     var dataNotLoaded = (loadLikes && !likesLoaded || loadComments && !commentsLoaded);
     if (dataNotLoaded == false) {
+        modal.modal("show");
+        setTimeout(new function() {modal.modal("hide");}, 1400);
         loadCompleteCallback();
         return;
     }
