@@ -29,6 +29,8 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
     for (var i = 0; i < results.length; i++) {
         var curResult = results[i];
         var eachResult = {};
+        if (is_defined(curResult["from"]) == false)
+            continue;
         eachResult["id"] = curResult["from"]["id"];
         eachResult["name"] = curResult["from"]["name"];
         eachResult["time"] = getDateTimeString(new Date(curResult["created_time"]));
