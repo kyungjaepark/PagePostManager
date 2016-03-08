@@ -9,7 +9,7 @@ FbApiListLoader.prototype.reset = function(){
 	this.onProgress = function(){};
 }
 
-FbApiListLoader.prototype.api = function(apiString, onLoadCompleteFn, onProgressFn){
+FbApiListLoader.prototype.api = function(apiString, param, onLoadCompleteFn, onProgressFn){
 
 	this.status = 1;
 	
@@ -20,7 +20,7 @@ FbApiListLoader.prototype.api = function(apiString, onLoadCompleteFn, onProgress
 		
 	this.resultArray = [];
 	var _self = this;
-	FB.api(apiString, function(response){_self.parse(response);});
+	FB.api(apiString, param, function(response){_self.parse(response);});
 }
 
 FbApiListLoader.prototype.stop = function(){

@@ -2,7 +2,7 @@ function PostLoader() {
     this.reset();
 }
 
-PostLoader.prototype.reset = function () {
+PostLoader.prototype.reset = function() {
     this.likesLoader = new FbApiListLoader();
     this.commentsLoader = new FbApiListLoader();
     this.postId = 0;
@@ -10,23 +10,23 @@ PostLoader.prototype.reset = function () {
     this.commentsCount = 0;
     this.loadLikes = false;
     this.loadComments = false;
-    this.loadCompleteCallback = function () { };
+    this.loadCompleteCallback = function() { };
     this.dialog = null;
     this.modal = null;
 }
 
-PostLoader.prototype.stop = function () {
+PostLoader.prototype.stop = function() {
     this.likesLoader.stop();
     this.commentsLoader.stop();
 }
 
-PostLoader.prototype.init = function (postId, successCallback, failCallback) {
+PostLoader.prototype.init = function(postId, successCallback, failCallback) {
     this.postId = postId;
     var _self = this;
     FB.api(
         "/" + this.postId,
         { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' },
-        function (response) {
+        function(response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
                 return;
@@ -35,7 +35,7 @@ PostLoader.prototype.init = function (postId, successCallback, failCallback) {
         });
 }
 
-PostLoader.prototype.parseSummary = function (response, callback) {
+PostLoader.prototype.parseSummary = function(response, callback) {
     this.likesCount = 0;
     if (isPropertyExists(response, ["likes", "summary"]))
         this.likesCount = Math.floor(response.likes.summary.total_count);
@@ -51,13 +51,13 @@ PostLoader.prototype.parseSummary = function (response, callback) {
 
 }
 
-PostLoader.prototype.launchLoaderModal = function (modal, loadLikes, loadComments, loadCompleteCallback) {
+PostLoader.prototype.launchLoaderModal = function(modal, loadLikes, loadComments, loadCompleteCallback) {
     var likesLoaded = (this.likesLoader.status == 2);
     var commentsLoaded = (this.commentsLoader.status == 2);
     var dataNotLoaded = (loadLikes && !likesLoaded || loadComments && !commentsLoaded);
     if (dataNotLoaded == false) {
         modal.modal("show");
-        setTimeout(new function() {modal.modal("hide");}, 1400);
+        setTimeout(new function() { modal.modal("hide"); }, 1400);
         loadCompleteCallback();
         return;
     }
@@ -70,17 +70,19 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadLikes, loadComment
     var _self = this;
     //    this.modal.on('hidden.bs.modal', function (e) {
     if (_self.loadLikes && _self.likesLoader.status == 0) {
-        _self.likesLoader.api("/" + _self.postId + "/likes?limit=200&fields=id,name"
-            , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
-            , function (fbApiListLoader) { $('#prgLoadLikesInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
-            );
+        _self.likesLoader.api("/" + _self.postId + "/likes"
+            , { 'limit': '200', 'fields': 'id,name' }
+            , function(fbApiListLoader) { _self.onLoaderTaskComplete(); }
+            , function(fbApiListLoader) { $('#prgLoadLikesInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
+        );
     }
     if (_self.loadComments && _self.commentsLoader.status == 0) {
-        var _api = "/" + _self.postId + "/comments?filter=stream&fields=id,from,created_time,message,message_tags,attachment,parent,like_count&date_format=c&limit=200";
-        _self.commentsLoader.api(_api
-            , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
-            , function (fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
-            );
+        _self.commentsLoader.api(
+            "/" + _self.postId + "/comments"
+            , { 'filter': 'stream', 'limit': '200', 'fields': 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c' }
+            , function(fbApiListLoader) { _self.onLoaderTaskComplete(); }
+            , function(fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
+        );
     }
     //	});
     //	buttons: [{text: "숨기기", click:function(){_self.dialog.dialog("close");}}]
@@ -88,7 +90,7 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadLikes, loadComment
     this.modal.modal("show");
 }
 
-PostLoader.prototype.onLoaderTaskComplete = function () {
+PostLoader.prototype.onLoaderTaskComplete = function() {
     var likesLoaded = (this.likesLoader.status == 2);
     var commentsLoaded = (this.commentsLoader.status == 2);
     if (likesLoaded)
@@ -103,9 +105,9 @@ PostLoader.prototype.onLoaderTaskComplete = function () {
     }
 }
 
-PostLoader.prototype.getLikesMap = function () {
+PostLoader.prototype.getLikesMap = function() {
     var resultTable = {};
-    $.each(this.likesLoader.resultArray, function () {
+    $.each(this.likesLoader.resultArray, function() {
         resultTable[stringify(this["id"])] = this["name"];
     });
     return resultTable;
