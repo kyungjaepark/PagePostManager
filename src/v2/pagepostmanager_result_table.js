@@ -2,7 +2,7 @@ function decorateMessageWithTags(message, message_tags) {
     var finalMessage = message + "";
     if (message_tags !== undefined) {
         var sortedMessageTags = message_tags.concat();
-        sortedMessageTags.sort(function (a, b) { return b["offset"] - a["offset"] });
+        sortedMessageTags.sort(function(a, b) { return b["offset"] - a["offset"] });
 
         var totalOffset = 0;
         for (var i = 0; i < sortedMessageTags.length; i++) {
@@ -36,18 +36,14 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
         eachResult["time"] = getDateTimeString(new Date(curResult["created_time"]));
         eachResult["timeRaw"] = curResult["created_time"];
         eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"]);
-        eachResult["link"] = "#";
-        var commentLinkArray = curResult["id"].split("_");
-        if (commentLinkArray.length == 2)
-            eachResult["link"] = String.format("https://www.facebook.com/{0}?comment_id={1}",
-                commentLinkArray[0], commentLinkArray[1]);
+        eachResult["link"] = String.format("https://www.facebook.com/{0}", curResult["id"]);
         eachResult["commentLikes"] = curResult["like_count"];
         eachResult["attachmentUrl"] = parseAttachmentUrl(curResult["attachment"])["url"];
         eachResult["attachmentImage"] = parseAttachmentUrl(curResult["attachment"])["image"];
         eachResult["json"] = JSON.stringify(curResult);
         commentsArray.push(eachResult);
     }
-    
+
     var stringBuilder = [];
     stringBuilder.push("<tr>");
     if (isShowLikes)
@@ -102,8 +98,8 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
                 , commentsArray[i]["timeRaw"]
                 , commentsArray[i]["commentLikes"]
                 , tdCommentLink
-                )
-            );
+            )
+        );
     }
     return stringBuilder.join("");
 }
