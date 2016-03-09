@@ -33,7 +33,7 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
             continue;
         eachResult["id"] = curResult["from"]["id"];
         eachResult["name"] = curResult["from"]["name"];
-        eachResult["time"] = getDateTimeString(new Date(curResult["created_time"]));
+        eachResult["time"] =  moment(curResult["created_time"]).format('YYYY-MM-DD HH:mm:ss');
         eachResult["timeRaw"] = curResult["created_time"];
         eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"]);
         eachResult["link"] = String.format("https://www.facebook.com/{0}", curResult["id"]);

@@ -85,7 +85,7 @@ function gpe_startParse() {
         
         var _tr = $('<tr>');
         $('<td>')
-            .text(getDateTimeString(new Date(this.created_time)))
+            .text(moment(this.created_time).format('YYYY-MM-DD HH:mm:ss'))
             .appendTo(_tr);
         $('<td>')
             .text(this.from.name)
