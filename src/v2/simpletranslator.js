@@ -24,7 +24,7 @@ SimpleTranslator = {
             $("#sb-show-admin").text("내가 관리하는 페이지/그룹 보기");
             $("#sb-extra-permission").text("참고 : 추가 권한이 필요합니다.");
             $("#btn-search-my-pages").text("내 페이지 보기");
-            $("#btn-search-my-groups").text("내 그룹 보기(구현 예정)");
+            $("#btn-search-my-groups").text("내 그룹 보기");
             $("#sb-search-by-name").text("페이지/그룹 이름으로 검색하기");
             $("#btn-search-page").text("페이지 찾기");
             $("#btn-search-group").text("그룹 찾기");
