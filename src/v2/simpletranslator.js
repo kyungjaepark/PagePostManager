@@ -47,6 +47,7 @@ SimpleTranslator = {
             $("#lblSbNoteId").text("결과에 표시되는 유저 ID는, 실제 유저 ID가 아닌 App-scoped ID입니다. 다음 설명을 참조하세요 : ");
             $("#lblSbNoteLink").text("[링크]");
             $("#btnExportResultTable").text("결과를 엑셀 파일로 받기 (크롬 전용)");
+            $("#btnExportResultAttachmentsZip").text("첨부 파일을 .zip 파일로 받기 (크롬 전용, 실험 기능)");
             $("#btnShowResultTable").text("결과를 화면에 표시");
             $("#btnShowResultTableNewWindow").text("새 창에 결과 테이블 표시");
         }

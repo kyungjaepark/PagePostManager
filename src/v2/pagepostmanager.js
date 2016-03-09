@@ -496,9 +496,61 @@ function wireEvents_post() {
     $('#btnLoadLikes').click(function() { getLikes(); });
     $('#btnLoadComments').click(function() { getComments(); });
     $('#btnExportResultTable').click(function() { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
+    $('#btnExportResultAttachmentsZip').click(function() { startDownloadAttachments(); });
     $('#btnShowResultTable').click(function() { $('#tblResultTable').removeClass('hidden'); });
     $('#btnShowResultTableNewWindow').click(function() { writeToNewTable($('#tblResultTable')); });
 }
+
+function startDownloadAttachments()
+{
+    var attachmentsMap = {};
+    $.each(g_appContext.postLoader.commentsLoader.resultArray, function() {
+        if (isPropertyExists(this, ["attachment","media","image","src"]) == false)
+            return true;
+        attachmentsMap[this.id] = {
+            url:this.attachment.media.image.src,
+            blob:null
+        };
+    })
+
+    startDownloadAttachments_fetch(attachmentsMap);    
+};
+
+function startDownloadAttachments_fetch(attachmentsMap)
+{
+    for (var t in attachmentsMap)
+    {
+        if (attachmentsMap[t].blob === null)
+        {
+            // http://www.henryalgus.com/reading-binary-files-using-jquery-ajax/
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', attachmentsMap[t].url, true);
+            xhr.responseType = 'arraybuffer'; //'blob';
+            xhr.onload = function(e) {
+                if (this.status == 200) {
+                    // get binary data as a response
+                    attachmentsMap[t].blob = this.response;
+                    startDownloadAttachments_fetch(attachmentsMap);
+                }
+            };
+            
+            xhr.send();
+            return;
+        }
+    }
+    
+    var zip = new JSZip();
+    // zip.file("Hello.txt", "Hello World\n");
+    var img = zip.folder("images");
+    for (var t in attachmentsMap)
+    {
+        img.file(t + '.jpg', attachmentsMap[t].blob, {base64: true});
+    }
+    
+    var content = zip.generate({type:"blob"});
+    saveAs(content, "pagepostmanager_attachments.zip");
+}
+
 
 function writeToNewTable(tblEntity) {
     var w = window.open();
