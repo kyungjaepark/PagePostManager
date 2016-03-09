@@ -12,7 +12,8 @@ function wireEvents_gpe() {
 
 function showGpe() {
     $("#group-post-extractor").removeClass('hidden');
-    $("#group-post-start").removeClass('hidden');
+    $('#gpe-start').removeClass('hidden');
+    $('#gpe-extract').addClass('hidden');
     $("#gpe-progress").text('추출을 시작합니다.');
     $("#group-post-extract").addClass('hidden');
     gpe_status.postData = [];
