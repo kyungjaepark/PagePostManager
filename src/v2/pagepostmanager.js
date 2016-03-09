@@ -484,13 +484,13 @@ function wireEvents_post() {
     $('#btnLoadComments').click(function() { getComments(); });
     $('#btnExportResultTable').click(function() { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
     $('#btnShowResultTable').click(function() { $('#tblResultTable').removeClass('hidden'); });
-    $('#btnShowResultTableNewWindow').click(function() { writeToNewTable(); });
+    $('#btnShowResultTableNewWindow').click(function() { writeToNewTable($('#tblResultTable')); });
 }
 
-function writeToNewTable() {
+function writeToNewTable(tblEntity) {
     var w = window.open();
     var new_body = $('<body>');
-    $('#tblResultTable')
+    tblEntity
         .clone()
         .attr('border', '1')
         .appendTo(new_body);
