@@ -24,12 +24,13 @@ function switchPage(pageName) {
     $('#page-' + pageName).removeClass('hidden');
     $('html,body').scrollTop(0);
 }
-$().ready(function () { main(); });
+$().ready(function() { main(); });
 
 function main() {
     $('body').css('display', '');
     wireEvents();
     wireEvents_post();
+    wireEvents_gpe();
     switchPage('loading');
     SimpleTranslator.init(getParamMap()['lang'])
     SimpleTranslator.translate();
@@ -64,7 +65,7 @@ function applyFragmentValue() {
         trySetupBoard(
             hashValue.substr(6),
             board_loadSuccess,
-            function () {
+            function() {
                 alert(SimpleTranslator.getKey('fatal_error')); // TODO
             });
         return;
@@ -73,7 +74,7 @@ function applyFragmentValue() {
         trySetupPost(
             hashValue.substr(5),
             post_loadSuccess,
-            function () {
+            function() {
                 alert(SimpleTranslator.getKey('fatal_error')); // TODO
             });
         return;
@@ -112,7 +113,7 @@ function processBasicLogin() {
 
 function onBtnBasicLoginClick() {
     $('#btn-basic-login').prop('disabled', true);
-    FB.login(function (response) {
+    FB.login(function(response) {
         fbmanager.refreshPermission(processBasicLogin);
     }, { scope: g_appConfig.basicPermissions, return_scopes: true });
 }
@@ -145,8 +146,8 @@ function onBtnSearchMyPagesClick() {
         onSuccess();
     }
     else {
-        FB.login(function (response) {
-            fbmanager.refreshPermission(function () {
+        FB.login(function(response) {
+            fbmanager.refreshPermission(function() {
                 if (fbmanager.checkForLackingPermission(lackingPermission).length == 0)
                     onSuccess();
                 else {
@@ -167,8 +168,8 @@ function onBtnSearchMyGroupsClick() {
         onSuccess();
     }
     else {
-        FB.login(function (response) {
-            fbmanager.refreshPermission(function () {
+        FB.login(function(response) {
+            fbmanager.refreshPermission(function() {
                 if (fbmanager.checkForLackingPermission(lackingPermission).length == 0)
                     onSuccess();
                 else {
@@ -193,7 +194,7 @@ function searchPage_startRequest(apiPrefix, param, searchType) {
     $('#tbl-page-search-result tr:gt(0)').remove();
     $('#page-search-result').addClass('hidden');
     $('#page-search-result-empty').addClass('hidden');
-    FB.api(apiPrefix, param, function (response) { searchPage_processResult(response); });
+    FB.api(apiPrefix, param, function(response) { searchPage_processResult(response); });
 }
 
 function searchPage_processResult(response) {
@@ -202,7 +203,7 @@ function searchPage_processResult(response) {
         .attr('width', '14')
         .css('margin-left', '3px');
 
-    $.each(response.data, function () {
+    $.each(response.data, function() {
         var curRow = $('<tr>')
             .addClass("ex-hand-cursor")
             .click(searchPage_onPageSelection)
@@ -255,7 +256,7 @@ function searchPage_processResult(response) {
 }
 function onBtnPageSearchResultMoreClick() {
     $(this).prop('disabled', true);
-    FB.api($(this).attr('api'), function (response) { searchPage_processResult(response); });
+    FB.api($(this).attr('api'), function(response) { searchPage_processResult(response); });
 }
 
 function searchPage_onPageSelection() {
@@ -270,7 +271,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
             metadata: 1,
             fields: "id,metadata{type},name",
         },
-        function (response) {
+        function(response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
                 return;
@@ -280,7 +281,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
             g_appContext.boardInfo.name = response.name;
             successCallback(response);
         }
-        );
+    );
 }
 
 function board_loadSuccess() {
@@ -289,11 +290,15 @@ function board_loadSuccess() {
         g_appContext.boardInfo.name,
         SimpleTranslator.getKey(g_appContext.boardInfo.type == 'group' ? 'group' : 'page')));
 
+    $("#group-post-extract-div").addClass('hidden');
+    if (g_appContext.boardInfo.type == 'group')
+        $("#group-post-extract-div").removeClass('hidden');
+
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
         { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' },
-        function (response) {
+        function(response) {
             board_processResult(response);
         });
 }
@@ -355,7 +360,7 @@ function generatePostInfoTr(responseData) {
 }
 
 function board_processResult(response) {
-    $.each(response.data, function () {
+    $.each(response.data, function() {
         generatePostInfoTr(this)
             .addClass("ex-hand-cursor")
             .click(board_onPostSelection)
@@ -379,7 +384,7 @@ function board_processResult(response) {
 }
 function onBtnBoardPostListMoreClick() {
     $(this).prop('disabled', true);
-    FB.api($(this).attr('api'), function (response) { board_processResult(response); });
+    FB.api($(this).attr('api'), function(response) { board_processResult(response); });
 }
 function board_onPostSelection() {
     setCommandFragment("post:" + $(this).attr('id'));
@@ -388,13 +393,13 @@ function board_onPostSelection() {
 // post (todo) -----------------------------------------------------------------
 
 jQuery.fn.extend({
-    _k_progressBarValue: function (value) {
+    _k_progressBarValue: function(value) {
         var ret = this.attr('aria-valuenow', value);
         recalcProgressBar(this);
         return ret;
     },
 
-    _k_progressBarMax: function (value) {
+    _k_progressBarMax: function(value) {
         var ret = this.attr('aria-valuemax', value);
         recalcProgressBar(this);
         return ret;
@@ -422,7 +427,7 @@ function trySetupPost(postId, successCallback, failCallback) {
         });
     }
 
-    g_appContext.postLoader.init(postId, function (response) {
+    g_appContext.postLoader.init(postId, function(response) {
         $('#tblShortSummary').find('tr').remove();
         $('#tblResultTable').find('tr').remove();
 
@@ -445,7 +450,7 @@ function post_loadSuccess() {
 
 function getLikes() {
     $('#tblResultTable').find('tr').remove();
-    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function () {
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function() {
         $('#tblResultTable').addClass('hidden');
         tblResultTable.innerHTML = generateLikesHtml(g_appContext.postLoader.getLikesMap());
         sorttable.makeSortable(tblResultTable);
@@ -456,7 +461,7 @@ function getLikes() {
 
 function getComments() {
     $('#tblResultTable').find('tr').remove();
-    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkLikes.checked, true, function () {
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkLikes.checked, true, function() {
         var results = g_appContext.postLoader.commentsLoader.resultArray;
         var likesMap = {};
         if (chkLikes.checked)
@@ -474,12 +479,12 @@ function getComments() {
 function wireEvents_post() {
     $("#prgLoadLikesInfo")._k_progressBarValue(0);
     $("#prgLoadCommentsInfo")._k_progressBarValue(0);
-    $('#btnLoadSummary').click(function () { getLikes(); });
-    $('#btnLoadLikes').click(function () { getLikes(); });
-    $('#btnLoadComments').click(function () { getComments(); });
-    $('#btnExportResultTable').click(function () { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
-    $('#btnShowResultTable').click(function () { $('#tblResultTable').removeClass('hidden'); });
-    $('#btnShowResultTableNewWindow').click(function () { writeToNewTable(); });
+    $('#btnLoadSummary').click(function() { getLikes(); });
+    $('#btnLoadLikes').click(function() { getLikes(); });
+    $('#btnLoadComments').click(function() { getComments(); });
+    $('#btnExportResultTable').click(function() { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
+    $('#btnShowResultTable').click(function() { $('#tblResultTable').removeClass('hidden'); });
+    $('#btnShowResultTableNewWindow').click(function() { writeToNewTable(); });
 }
 
 function writeToNewTable() {
