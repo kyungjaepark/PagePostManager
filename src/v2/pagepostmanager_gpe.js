@@ -4,15 +4,33 @@ var gpe_status = {
 };
 function wireEvents_gpe() {
     $('#btn-group-post-extract-show').click(function() { showGpe(); });
+    $('#gpe-start').click(function() { gpeStart(); });
     $('#gpe-stop').click(function() { gpeStop(); });
     $('#gpe-excel').click(function() { gpeExcel(); });
     $('#gpe-new').click(function() { gpeNew(); });
     $('#gpe-close').click(function() { gpeClose(); });
+//  <div id="gpe-datetimepicker-from"></div>
+//   <div id="gpe-datetimepicker-to"></div>
+    $('#gpe-datetimepicker-from').datetimepicker({
+        sideBySide: true,
+        format:'YYYY-MM-DD HH:mm:ss',
+    });
+    $('#gpe-datetimepicker-to').datetimepicker({
+        sideBySide: true,
+        format:'YYYY-MM-DD HH:mm:ss',
+    });
 }
 
 function showGpe() {
     $("#group-post-extractor").removeClass('hidden');
-    $('#gpe-start').removeClass('hidden');
+    $('#gpe-welcome').removeClass('hidden');
+    $('#gpe-retrieve').addClass('hidden');
+    $('#gpe-extract').addClass('hidden');
+}
+
+function gpeStart() {
+    $('#gpe-welcome').addClass('hidden');
+    $('#gpe-retrieve').removeClass('hidden');
     $('#gpe-extract').addClass('hidden');
     $("#gpe-progress").text('추출을 시작합니다.');
     $("#group-post-extract").addClass('hidden');
@@ -20,9 +38,17 @@ function showGpe() {
     gpe_status.stopRequested = false;
     $('#gpe-extracted-table').html('');
 
+    var param = { 'fields': 'id,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
+    , 'date_format': 'c', 'limit':50, locale:$('#graph-api-locale').val()};
+    if ($('#gep-check-range').prop('checked'))
+    {
+        param["since"] = moment($('#gpe-datetimepicker-from').val()).unix();
+        param["until"] = moment($('#gpe-datetimepicker-to').val()).unix();
+        console.log(param);
+    }
+    
     FB.api(String.format('/{0}/feed', g_appContext.boardInfo.id),
-        { 'fields': 'id,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
-    , 'date_format': 'c', 'limit':50, locale:$('#graph-api-locale').val()},
+        param,
         function(response) {
             gpe_processResult(response);
         });
@@ -53,7 +79,8 @@ function gpeStop() {
 }
 
 function gpe_startParse() {
-    $('#gpe-start').addClass('hidden');
+    $('#gpe-welcome').addClass('hidden');
+    $('#gpe-retrieve').addClass('hidden');
     $('#gpe-extract').removeClass('hidden');
     
     var tbl = $('#gpe-extracted-table');
@@ -120,5 +147,6 @@ function gpeNew() {
 }
 
 function gpeClose() {
+    gpe_status.stopRequested = false;
     $('#group-post-extractor').addClass('hidden');
 }
