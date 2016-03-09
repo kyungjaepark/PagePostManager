@@ -33,8 +33,6 @@ function main() {
     switchPage('loading');
     SimpleTranslator.init(getParamMap()['lang'])
     SimpleTranslator.translate();
-    if (getParamMap()['fb_review'] == 'true')
-        $('#btn-search-my-groups').prop('disabled', false);
     fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
 }
 
