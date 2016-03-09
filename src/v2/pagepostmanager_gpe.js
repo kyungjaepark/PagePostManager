@@ -20,7 +20,7 @@ function showGpe() {
     $('#gpe-extracted-table').html('');
 
     FB.api(String.format('/{0}/feed', g_appContext.boardInfo.id),
-        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
+        { 'fields': 'id,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
     , 'date_format': 'c', 'limit':50},
         function(response) {
             gpe_processResult(response);
@@ -31,7 +31,7 @@ function gpe_processResult(response) {
     var update_time = '';
     $.each(response.data, function() {
         gpe_status.postData.push(this);
-        update_time = this.updated_time;
+        update_time = this.created_time;
     });
     $('#gpe-progress').text(String.format('{0}까지의 게시물 {1}개가 추출되었습니다.',
     update_time, gpe_status.postData.length));
@@ -59,11 +59,12 @@ function gpe_startParse() {
     tbl.html('');
     $('<tr>')
     .appendTo(tbl)
-    .append($('<td>').text('수정일'))
-    .append($('<td>').text('올린이ID'))
-    .append($('<td>').text('올린이이름'))
-    .append($('<td>').text('내용'))
-    .append($('<td>').text('첨부'));
+    .append($('<td>').text('날짜/시간'))
+    .append($('<td>').text('게시자'))
+    .append($('<td>').text('게시글내용'))
+    .append($('<td>').text('게시글주소'))
+    .append($('<td>').text('게시자페북주소'))
+    .append($('<td>').text('첨부이미지'));
     
     $.each (gpe_status.postData, function() {
         
@@ -75,7 +76,7 @@ function gpe_startParse() {
         $.each(this.attachments, function() {
             $.each(this, function() {
                 if (is_defined(this.media) && is_defined(this.media.image))
-                    attHtml += String.format("<a href='{0}' target='_blank'><img src='{1}' height='150'></a><br/>",
+                    attHtml += String.format("<img src='{1}' height='150'><br/><a href='{0}' target='_blank'>(Link)</a><br/><br/>",
                         this.url, this.media.image.src);
                     })
         });
@@ -83,17 +84,25 @@ function gpe_startParse() {
         
         var _tr = $('<tr>');
         $('<td>')
-            .text(this.updated_time)
-            .appendTo(_tr);
-        $('<td>')
-            .css('mso-number-format', '"\\@"')
-            .text(this.from.id)
+            .text(getDateTimeString(new Date(this.created_time)))
             .appendTo(_tr);
         $('<td>')
             .text(this.from.name)
             .appendTo(_tr);
         $('<td>')
-            .html(decorateMessageWithTags(this.message, this.message_tags))
+            .html(decorateMessageWithTags(this.message, this.message_tags)
+                .replaceAll('\r','')
+                .replaceAll('\n','<br style="mso-data-placement:same-cell;" />'))
+            .appendTo(_tr);
+            
+        var lnk_post = 'https://www.facebook.com/' + this.id;
+        var lnk_author = 'https://www.facebook.com/' + this.from.id;
+        $('<td>')
+            .append($('<a>').attr('href', lnk_post).text(lnk_post))
+            .appendTo(_tr);
+        $('<td>')
+//            .attr('style', 'mso-number-format:"\\@"')
+            .append($('<a>').attr('href', lnk_author).text(lnk_author))
             .appendTo(_tr);
         $('<td>')
             .html(attHtml)

@@ -62,7 +62,7 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
         if (isShowAttachment) {
             attachmentTd = "<td>&nbsp;</td>";
             if (commentsArray[i]["attachmentUrl"] != "") {
-                attachmentTd = String.format("<td height='150' sorttable_customkey='1'><a href='{0}' target='_blank'><img src='{1}' height='150'></a></td>",
+                attachmentTd = String.format("<td height='150' sorttable_customkey='1'><img src='{1}' height='150'><br/><a href='{0}' target='_blank'>(Link)</a></td>",
                     commentsArray[i]["attachmentUrl"], commentsArray[i]["attachmentImage"]);
             }
         }
