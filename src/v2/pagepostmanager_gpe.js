@@ -22,7 +22,7 @@ function showGpe() {
 
     FB.api(String.format('/{0}/feed', g_appContext.boardInfo.id),
         { 'fields': 'id,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
-    , 'date_format': 'c', 'limit':50},
+    , 'date_format': 'c', 'limit':50, locale:$('#graph-api-locale').val()},
         function(response) {
             gpe_processResult(response);
         });

@@ -34,6 +34,7 @@ function main() {
     switchPage('loading');
     SimpleTranslator.init(getParamMap()['lang'])
     SimpleTranslator.translate();
+    initGraphApiLocale();
     fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
 }
 
@@ -51,6 +52,16 @@ function wireEvents() {
     $(window).bind('hashchange', applyFragmentValue);
 }
 
+function initGraphApiLocale() {
+    $('#graph-api-locale').html('');
+    var locale_array = [['en_US', 'English(US)'], ['ko_KR', '한국어']];
+    $.each(locale_array, function() {
+        $('<option>')
+            .attr('value', this[0])
+            .text(this[1])
+            .appendTo($('#graph-api-locale'));
+    });
+}
 function applyFragmentValue() {
     if (g_appContext.initialized == false)
         return;
@@ -190,7 +201,7 @@ function onBtnSearchGroupClick() {
 function searchPage_startRequest(apiPrefix, param, searchType) {
     g_appContext.searchType = searchType;
     param["fields"] = "id,name,picture,likes,category,about,description,general_info,is_verified,username,members.summary(true)";
-
+    param["locale"] = $('#graph-api-locale').val();
     $('#tbl-page-search-result tr:gt(0)').remove();
     $('#page-search-result').addClass('hidden');
     $('#page-search-result-empty').addClass('hidden');
@@ -270,6 +281,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
         {
             metadata: 1,
             fields: "id,metadata{type},name",
+            locale: $('#graph-api-locale').val(),
         },
         function(response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
@@ -297,7 +309,8 @@ function board_loadSuccess() {
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
-        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' },
+        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
+    locale:$('#graph-api-locale').val() },
         function(response) {
             board_processResult(response);
         });
@@ -427,7 +440,7 @@ function trySetupPost(postId, successCallback, failCallback) {
         });
     }
 
-    g_appContext.postLoader.init(postId, function(response) {
+    g_appContext.postLoader.init(postId, $('#graph-api-locale').val(), function(response) {
         $('#tblShortSummary').find('tr').remove();
         $('#tblResultTable').find('tr').remove();
 

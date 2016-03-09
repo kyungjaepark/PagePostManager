@@ -12,7 +12,7 @@ SimpleTranslator = {
             $("#lblSbBigTitle").html('PagePostManager v2 :: 페이스북용 페이지/그룹 게시물 매니저');
             $("#lblSbWelcome").html('게시물 댓글을 추출하려고 "댓글 더 보기" 버튼을 누르느라 지치셨나요??<br/>'
                 + '클릭 한 번으로, 순식간에 모든 댓글과 좋아요를 모아보세요.');
-            $('#sb-temp-v1').html("<br/> 이전 버전을 사용하고 싶으신 분은 <a href='./v1/'><u>이곳</u></a>을 클릭해주세요.");
+            $('#sb-locale').html("추출 시 기본 언어 : ");
             $('#sb-connecting-to-facebook').text('페이스북에 연결 중입니다.');
             $('#sb-connecting-to-facebook-2').text('(이 화면에서 10초 이상 진행이 멈춰 있다면 새로고침을 눌러주세요.)');
 

@@ -13,6 +13,7 @@ PostLoader.prototype.reset = function() {
     this.loadCompleteCallback = function() { };
     this.dialog = null;
     this.modal = null;
+    this.locale = 'en_US';
 }
 
 PostLoader.prototype.stop = function() {
@@ -20,12 +21,14 @@ PostLoader.prototype.stop = function() {
     this.commentsLoader.stop();
 }
 
-PostLoader.prototype.init = function(postId, successCallback, failCallback) {
+PostLoader.prototype.init = function(postId, locale, successCallback, failCallback) {
     this.postId = postId;
+    this.locale = locale;
     var _self = this;
     FB.api(
         "/" + this.postId,
-        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' },
+        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
+    locale: this.locale },
         function(response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
@@ -71,7 +74,7 @@ PostLoader.prototype.launchLoaderModal = function(modal, loadLikes, loadComments
     //    this.modal.on('hidden.bs.modal', function (e) {
     if (_self.loadLikes && _self.likesLoader.status == 0) {
         _self.likesLoader.api("/" + _self.postId + "/likes"
-            , { 'limit': '200', 'fields': 'id,name' }
+            , { limit: '200', fields: 'id,name', locale: _self.locale }
             , function(fbApiListLoader) { _self.onLoaderTaskComplete(); }
             , function(fbApiListLoader) { $('#prgLoadLikesInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
         );
@@ -79,7 +82,9 @@ PostLoader.prototype.launchLoaderModal = function(modal, loadLikes, loadComments
     if (_self.loadComments && _self.commentsLoader.status == 0) {
         _self.commentsLoader.api(
             "/" + _self.postId + "/comments"
-            , { 'filter': 'stream', 'limit': '200', 'fields': 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c' }
+            , { filter: 'stream', limit: '200',
+            locale: _self.locale,
+             fields: 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c' }
             , function(fbApiListLoader) { _self.onLoaderTaskComplete(); }
             , function(fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
         );
