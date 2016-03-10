@@ -483,6 +483,8 @@ function getComments() {
         $('#tblResultTable').find('tr').remove();
         $('#tblResultTable').addClass('hidden');
         tblResultTable.innerHTML = getCommentsHtml(results, likesMap, chkShowAttachment.checked, chkLikes.checked, chkCommentLink.checked);
+        if (getCommentsHtml_errorCount > 0)
+            alert(String.format(SimpleTranslator.getKey('from_not_found'), getCommentsHtml_errorCount));
         sorttable.makeSortable(tblResultTable);
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();

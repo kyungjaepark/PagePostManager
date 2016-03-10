@@ -23,17 +23,23 @@ function generateLikesHtml(likesMap) {
     return stringBuilder.join("");
 }
 
+var getCommentsHtml_errorCount = 0;
 function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isShowCommentLink) {
-
+    getCommentsHtml_errorCount = 0;
     var commentsArray = [];
     for (var i = 0; i < results.length; i++) {
         var curResult = results[i];
         var eachResult = {};
-        if (is_defined(curResult["from"]) == false)
-            continue;
-        eachResult["id"] = curResult["from"]["id"];
-        eachResult["name"] = curResult["from"]["name"];
-        eachResult["time"] =  moment(curResult["created_time"]).format('YYYY-MM-DD HH:mm:ss');
+        if (is_defined(curResult["from"]) == false) {
+            eachResult["id"] = "(Error)";
+            eachResult["name"] = "(Error)";
+            getCommentsHtml_errorCount++;
+        }
+        else {
+            eachResult["id"] = curResult["from"]["id"];
+            eachResult["name"] = curResult["from"]["name"];
+        }
+        eachResult["time"] = moment(curResult["created_time"]).format('YYYY-MM-DD HH:mm:ss');
         eachResult["timeRaw"] = curResult["created_time"];
         eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"]);
         eachResult["link"] = String.format("https://www.facebook.com/{0}", curResult["id"]);

@@ -58,6 +58,7 @@ SimpleTranslator = {
             if (key == 'post_list_title_format') return '[{0}] {1}의 게시물';
             if (key == 'group') return '그룹';
             if (key == 'page') return '페이지';
+            if (key == 'from_not_found') return '{0}건의 항목에서 사용자 ID/이름을 추출할 수 없었습니다.\n해당 ID와 이름은 (Error)로 표시됩니다.';
 
         }
         else {
@@ -65,6 +66,7 @@ SimpleTranslator = {
             if (key == 'post_list_title_format') return 'Post list of [{0}] {1}';
             if (key == 'group') return 'group';
             if (key == 'page') return 'page';
+            if (key == 'from_not_found') return 'Could not extract user ID/name from {0} entries\nThe ID/name of those entries is now replaced with "(Error)".';
         }
 
 
