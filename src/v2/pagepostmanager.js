@@ -303,7 +303,7 @@ function board_loadSuccess() {
         SimpleTranslator.getKey(g_appContext.boardInfo.type == 'group' ? 'group' : 'page')));
 
     $("#group-post-extract-div").addClass('hidden');
-    if (g_appContext.boardInfo.type == 'group')
+    //if (g_appContext.boardInfo.type == 'group')
         $("#group-post-extract-div").removeClass('hidden');
 
     $('#tbl-board-post-list tr:gt(0)').remove();

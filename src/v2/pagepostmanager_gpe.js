@@ -38,6 +38,8 @@ function gpeStart() {
     gpe_status.stopRequested = false;
     $('#gpe-extracted-table').html('');
 
+    var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
+
     var param = { 'fields': 'id,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
     , 'date_format': 'c', 'limit':50, locale:$('#graph-api-locale').val()};
     if ($('#gep-check-range').prop('checked'))
@@ -47,7 +49,7 @@ function gpeStart() {
         console.log(param);
     }
     
-    FB.api(String.format('/{0}/feed', g_appContext.boardInfo.id),
+    FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
         param,
         function(response) {
             gpe_processResult(response);
