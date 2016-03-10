@@ -24,13 +24,15 @@ function generateLikesHtml(likesMap) {
 }
 
 var getCommentsHtml_errorCount = 0;
-function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isShowCommentLink) {
+function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isShowCommentLink, isSkipUnknownUser) {
     getCommentsHtml_errorCount = 0;
     var commentsArray = [];
     for (var i = 0; i < results.length; i++) {
         var curResult = results[i];
         var eachResult = {};
         if (is_defined(curResult["from"]) == false) {
+            if (isSkipUnknownUser)
+                continue;
             eachResult["id"] = "(Error)";
             eachResult["name"] = "(Error)";
             getCommentsHtml_errorCount++;
