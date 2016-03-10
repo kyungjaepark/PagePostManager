@@ -514,7 +514,15 @@ function startDownloadAttachments()
     $.each(g_appContext.postLoader.commentsLoader.resultArray, function() {
         if (isPropertyExists(this, ["attachment","media","image","src"]) == false)
             return true;
+
+        var ext = '.jpg';
+        if (this.attachment.media.image.src.indexOf('.gif') >= 0)
+            ext = '.gif';
+        if (this.attachment.media.image.src.indexOf('.png') >= 0)
+            ext = '.png';
+        
         attachmentsMap[this.id] = {
+            localName:this.id + ext,
             url:this.attachment.media.image.src,
             blob:null
         };
@@ -551,7 +559,31 @@ function startDownloadAttachments_fetch(attachmentsMap)
     var img = zip.folder("images");
     for (var t in attachmentsMap)
     {
-        img.file(t + '.jpg', attachmentsMap[t].blob, {base64: true});
+        img.file(attachmentsMap[t].localName, attachmentsMap[t].blob, {base64: true});
+    }
+    
+    var html = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>';
+    {
+        var new_body = $('<body>');
+        $('#tblResultTable')
+            .clone()
+            .attr('border', '1')
+            .appendTo(new_body);
+            
+        html += new_body[0].outerHTML;
+        for (var t in attachmentsMap)
+        {
+            var org = $('<div>').text(attachmentsMap[t].url).html();
+            var rep ='./images/' + attachmentsMap[t].localName;
+            while(org != '')
+            {
+                var idx = html.indexOf(org);
+                if (idx < 0)
+                    break;
+                html = html.substr(0, idx) + rep + html.substr(idx + org.length);
+            } 
+        }
+        zip.file('index.html', html);
     }
     
     var content = zip.generate({type:"blob"});
