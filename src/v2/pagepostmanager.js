@@ -291,6 +291,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
             g_appContext.boardInfo.id = response.id;
             g_appContext.boardInfo.type = response.metadata.type;
             g_appContext.boardInfo.name = response.name;
+            ga('send', 'event', g_appContext.boardInfo.type, 'list', g_appContext.boardInfo.name);
             successCallback(response);
         }
     );
@@ -448,6 +449,7 @@ function trySetupPost(postId, successCallback, failCallback) {
         $('<td>').appendTo(_tr).text('Image');
         $('<td>').appendTo(_tr).text('Text');
         $('#tblShortSummary').append(generatePostInfoTr(response));
+        ga('send', 'event', g_appContext.boardInfo.type, 'post', postId);
         successCallback(response);
     }, failCallback);
 }
@@ -469,6 +471,7 @@ function getLikes() {
         sorttable.makeSortable(tblResultTable);
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
+        ga('send', 'event', g_appContext.boardInfo.type, 'likes', g_appContext.postLoader.postId, g_appContext.postLoader.likesLoader.resultArray.length);
     });
 }
 
@@ -489,6 +492,7 @@ function getComments() {
         sorttable.makeSortable(tblResultTable);
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
+        ga('send', 'event', g_appContext.boardInfo.type, 'comments', g_appContext.postLoader.postId, results.length);
     });
 }
 
