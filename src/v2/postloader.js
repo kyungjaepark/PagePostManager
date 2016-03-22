@@ -6,6 +6,7 @@ PostLoader.prototype.reset = function() {
     this.likesLoader = new FbApiListLoader();
     this.commentsLoader = new FbApiListLoader();
     this.postId = 0;
+    this.permalink_url = '';
     this.likesCount = 0;
     this.commentsCount = 0;
     this.loadLikes = false;
@@ -27,7 +28,7 @@ PostLoader.prototype.init = function(postId, locale, successCallback, failCallba
     var _self = this;
     FB.api(
         "/" + this.postId,
-        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
+        { 'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
     locale: this.locale },
         function(response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
@@ -39,6 +40,8 @@ PostLoader.prototype.init = function(postId, locale, successCallback, failCallba
 }
 
 PostLoader.prototype.parseSummary = function(response, callback) {
+    this.permalink_url = response.permalink_url;
+    
     this.likesCount = 0;
     if (isPropertyExists(response, ["likes", "summary"]))
         this.likesCount = Math.floor(response.likes.summary.total_count);

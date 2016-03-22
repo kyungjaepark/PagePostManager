@@ -310,7 +310,7 @@ function board_loadSuccess() {
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
-        { 'fields': 'id,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
+        { 'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
     locale:$('#graph-api-locale').val() },
         function(response) {
             board_processResult(response);
@@ -345,6 +345,8 @@ function generatePostInfoTr(responseData) {
     if (is_defined(responseData.from))
         header = responseData.from.name;
     textTd.append($('<strong>').text(header));
+    textTd.append($('<br/>'));
+    textTd.append($('<a>').text(responseData.permalink_url).attr('href', responseData.permalink_url));
     textTd.append($('<br/>'));
 
     $('<strong>')
