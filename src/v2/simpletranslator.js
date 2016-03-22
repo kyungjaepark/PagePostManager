@@ -32,7 +32,7 @@ SimpleTranslator = {
             $("#sb-search-page-empty").text("검색 결과가 없습니다. 다른 검색어를 입력해 보세요.");
 
             $("#btn-board-search-again").text("페이지/그룹 검색으로 돌아가기");
-            $("#btn-group-post-extract-show").text("그룹 게시물 추출하기(실험 기능)");
+            $("#btn-group-post-extract-show").text("페이지/그룹 게시물 추출하기(실험 기능)");
             $("#board-name").text("게시물 목록");
             $("#btn-board-post-list-more").text("더 보기");
 

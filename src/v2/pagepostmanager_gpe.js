@@ -40,7 +40,7 @@ function gpeStart() {
 
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
 
-    var param = { 'fields': 'id,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
+    var param = { 'fields': 'id,permalink_url,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
     , 'date_format': 'c', 'limit':50, locale:$('#graph-api-locale').val()};
     if ($('#gep-check-range').prop('checked'))
     {
@@ -125,7 +125,7 @@ function gpe_startParse() {
                 .replaceAll('\n','<br style="mso-data-placement:same-cell;" />'))
             .appendTo(_tr);
             
-        var lnk_post = 'https://www.facebook.com/' + this.id;
+        var lnk_post = this.permalink_url;
         var lnk_author = 'https://www.facebook.com/' + this.from.id;
         $('<td>')
             .append($('<a>').attr('href', lnk_post).text(lnk_post))
