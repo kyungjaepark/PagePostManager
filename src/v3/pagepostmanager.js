@@ -200,7 +200,7 @@ function onBtnSearchGroupClick() {
 
 function searchPage_startRequest(apiPrefix, param, searchType) {
     g_appContext.searchType = searchType;
-    param["fields"] = "id,name,picture,likes,category,about,description,general_info,is_verified,username,members.summary(true)";
+    param["fields"] = "id,name,picture,fan_count,category,about,description,general_info,is_verified,username,members.summary(true)";
     param["locale"] = $('#graph-api-locale').val();
     $('#tbl-page-search-result tr:gt(0)').remove();
     $('#page-search-result').addClass('hidden');
@@ -240,7 +240,7 @@ function searchPage_processResult(response) {
             if (this.is_verified)
                 textTd.append(verified_img.clone());
             textTd.append($('<br/>'));
-            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.likes) + ' Likes'));
+            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.fan_count) + ' Fans'));
             textTd.append($('<br/>'));
             textTd.append($('<small>').text(this.category));
             textTd.append($('<br/>'));
