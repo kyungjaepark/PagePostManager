@@ -233,7 +233,7 @@ function searchPage_processResult(response) {
 
         if (g_appContext.searchType == 'group') {
             textTd.append($('<br/>'));
-            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.members.summary.total_count) + ' Likes'));
+            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.members.summary.total_count) + ' Reactions'));
             textTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(this.description));
         }
         else {
@@ -310,7 +310,7 @@ function board_loadSuccess() {
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
-        { 'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
+        { 'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
     locale:$('#graph-api-locale').val() },
         function(response) {
             board_processResult(response);
@@ -351,7 +351,7 @@ function generatePostInfoTr(responseData) {
 
     $('<strong>')
         .addClass('small')
-        .text(numberWithCommas(responseData.likes.summary.total_count) + ' Likes')
+        .text(numberWithCommas(responseData.reactions.summary.total_count) + ' Reactions')
         .appendTo(textTd);
     $('<br/>').appendTo(textTd);
     $('<strong>')
@@ -465,29 +465,29 @@ function post_loadSuccess() {
     $('#alertResultsPlaceholder').show();
 }
 
-function getLikes() {
+function getReactions() {
     $('#tblResultTable').find('tr').remove();
     g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function() {
         $('#tblResultTable').addClass('hidden');
-        tblResultTable.innerHTML = generateLikesHtml(g_appContext.postLoader.getLikesMap());
+        tblResultTable.innerHTML = generateReactionsHtml(g_appContext.postLoader.getReactionsMap());
         sorttable.makeSortable(tblResultTable);
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
-        ga('send', 'event', g_appContext.boardInfo.type, 'likes', g_appContext.postLoader.postId, g_appContext.postLoader.likesLoader.resultArray.length);
+        ga('send', 'event', g_appContext.boardInfo.type, 'reactions', g_appContext.postLoader.postId, g_appContext.postLoader.reactionsLoader.resultArray.length);
     });
 }
 
 function getComments() {
     $('#tblResultTable').find('tr').remove();
-    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkLikes.checked, true, function() {
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkReactions.checked, true, function() {
         var results = g_appContext.postLoader.commentsLoader.resultArray;
-        var likesMap = {};
-        if (chkLikes.checked)
-            likesMap = g_appContext.postLoader.getLikesMap();
+        var reactionsMap = {};
+        if (chkReactions.checked)
+            reactionsMap = g_appContext.postLoader.getReactionsMap();
 
         $('#tblResultTable').find('tr').remove();
         $('#tblResultTable').addClass('hidden');
-        tblResultTable.innerHTML = getCommentsHtml(results, likesMap, chkShowAttachment.checked, chkLikes.checked, chkCommentLink.checked,
+        tblResultTable.innerHTML = getCommentsHtml(results, reactionsMap, chkShowAttachment.checked, chkReactions.checked, chkCommentLink.checked,
             $('#chkSkipUnknownUser').prop('checked'));
         if (getCommentsHtml_errorCount > 0)
             alert(String.format(SimpleTranslator.getKey('from_not_found'), getCommentsHtml_errorCount));
@@ -499,10 +499,10 @@ function getComments() {
 }
 
 function wireEvents_post() {
-    $("#prgLoadLikesInfo")._k_progressBarValue(0);
+    $("#prgLoadReactionsInfo")._k_progressBarValue(0);
     $("#prgLoadCommentsInfo")._k_progressBarValue(0);
-    $('#btnLoadSummary').click(function() { getLikes(); });
-    $('#btnLoadLikes').click(function() { getLikes(); });
+    $('#btnLoadSummary').click(function() { getReactions(); });
+    $('#btnLoadReactions').click(function() { getReactions(); });
     $('#btnLoadComments').click(function() { getComments(); });
     $('#btnExportResultTable').click(function() { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
     $('#btnExportResultAttachmentsZip').click(function() { startDownloadAttachments(); });

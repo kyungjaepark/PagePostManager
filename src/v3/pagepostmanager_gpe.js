@@ -40,7 +40,7 @@ function gpeStart() {
 
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
 
-    var param = { 'fields': 'id,permalink_url,from,admin_creator,icon,message,created_time,story,picture,attachments,likes.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
+    var param = { 'fields': 'id,permalink_url,from,admin_creator,icon,message,created_time,story,picture,attachments,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type' 
     , 'date_format': 'c', 'limit':50, locale:$('#graph-api-locale').val()};
     if ($('#gep-check-range').prop('checked'))
     {

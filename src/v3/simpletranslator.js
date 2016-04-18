@@ -38,13 +38,15 @@ SimpleTranslator = {
 
             $("#btn-goto-search").text("페이지/그룹 검색으로 이동");
             $("#btn-goto-post-list").text("게시물 목록으로 돌아가기");
-            $("#btnLoadLikes").text("게시물 좋아요 추출");
+            $("#btnLoadReactions").text("게시물 반응 추출");
             $("#btnLoadComments").text("게시물 댓글 추출");
             $("#lblSbOptAtt").text("첨부 사진 포함");
-            $("#lblSbOptPostLikes").text("게시물 좋아요 여부(PostLike) 포함");
+            $("#lblSbOptPostReactions").text("게시물 반응 여부(PostReaction) 포함");
             $("#lblSbOptCommentLink").text("댓글 링크 보기");
             $("#lblSkipUnknownUser").text("사용자 정보를 확인할 수 없는 댓글 제외");
-            $("#lblSbNoteId").text("결과에 표시되는 유저 ID는, 실제 유저 ID가 아닌 App-scoped ID입니다. 다음 설명을 참조하세요 : ");
+            $("#lblSbNoteReaction").text("노트 #1 : 이제 '좋아요(Like)' 대신, 좋아요를 포함한 전체 '반응(Reaction)' 이 표시됩니다. 다음 설명을 참조하세요 : ");
+            $("#lblSbNoteReactionLink").text("[링크]");
+            $("#lblSbNoteId").text("노트 #2 : 결과에 표시되는 유저 ID는, 실제 유저 ID가 아닌 App-scoped ID입니다. 다음 설명을 참조하세요 : ");
             $("#lblSbNoteLink").text("[링크]");
             $("#btnExportResultTable").text("결과를 엑셀 파일로 받기 (크롬 전용)");
             $("#btnExportResultAttachmentsZip").text("첨부 파일을 .zip 파일로 받기 (크롬 전용, 실험 기능)");

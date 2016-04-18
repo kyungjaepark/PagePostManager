@@ -15,16 +15,16 @@ function decorateMessageWithTags(message, message_tags) {
     return finalMessage;
 }
 
-function generateLikesHtml(likesMap) {
+function generateReactionsHtml(reactionsMap) {
     var stringBuilder = [];
-    stringBuilder.push("<tr><th>ID</th><th>이름</th></tr>");
-    for (var x in likesMap)
-        stringBuilder.push(String.format("<tr><td style='mso-number-format:\"\\@\"'>{0}</td><td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td></tr>", x, likesMap[x]));
+    stringBuilder.push("<tr><th>ID</th><th>이름</th><th>반응</th></tr>");
+    for (var x in reactionsMap)
+        stringBuilder.push(String.format("<tr><td style='mso-number-format:\"\\@\"'>{0}</td><td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td><td>{2}</td></tr>", x, reactionsMap[x]['name'], reactionsMap[x]['reaction_type']));
     return stringBuilder.join("");
 }
 
 var getCommentsHtml_errorCount = 0;
-function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isShowCommentLink, isSkipUnknownUser) {
+function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReactions, isShowCommentLink, isSkipUnknownUser) {
     getCommentsHtml_errorCount = 0;
     var commentsArray = [];
     for (var i = 0; i < results.length; i++) {
@@ -54,8 +54,8 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
 
     var stringBuilder = [];
     stringBuilder.push("<tr>");
-    if (isShowLikes)
-        stringBuilder.push("<td>PostLike!</td>");
+    if (isShowReactions)
+        stringBuilder.push("<td>Post Reaction</td>");
     stringBuilder.push("<td>ID</td>");
     if (isShowCommentLink)
         stringBuilder.push("<td>Link</td>");
@@ -75,11 +75,11 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
             }
         }
 
-        var tdLikes = "";
-        if (isShowLikes) {
-            tdLikes = "<td>&nbsp;</td>";
-            if (likesMap[commentsArray[i]["id"]] !== undefined)
-                tdLikes = "<td>Like!</td>";
+        var tdReactions = "";
+        if (isShowReactions) {
+            tdReactions = "<td>&nbsp;</td>";
+            if (reactionsMap[commentsArray[i]["id"]] !== undefined)
+                tdReactions = "<td>" + reactionsMap[commentsArray[i]["id"]]['reaction_type'] + "</td>";
         }
 
         var tdCommentLink = "";
@@ -102,7 +102,7 @@ function getCommentsHtml(results, likesMap, isShowAttachment, isShowLikes, isSho
                 , commentsArray[i]["time"]
                 , commentsArray[i]["htmlMessage"]
                 , attachmentTd
-                , tdLikes
+                , tdReactions
                 , commentsArray[i]["timeRaw"]
                 , commentsArray[i]["commentLikes"]
                 , tdCommentLink
