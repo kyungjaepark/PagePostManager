@@ -1,0 +1,19 @@
+/* Sortable tables */
+table.sortable thead {
+    background-color:#eee;
+    color:#666666;
+    font-weight: bold;
+    cursor: default;
+}
+table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):after { content: " \25B4\25BE" }
+
+.ex-hand-cursor {
+    textDecoration: underline;
+    cursor: pointer;
+}
+
+.ex-overflowtd {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
