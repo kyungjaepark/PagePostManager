@@ -44,6 +44,7 @@ SimpleTranslator = {
             $("#lblSbOptPostReactions").text("게시물 반응 여부(PostReaction) 포함");
             $("#lblSbOptCommentLink").text("댓글 링크 보기");
             $("#lblSkipUnknownUser").text("사용자 정보를 확인할 수 없는 댓글 제외");
+            $("#lblShowTopInfo").text("댓글 추출 결과 테이블 상단에 추가 정보 표시");
             $("#lblSbNoteReaction").text("노트 #1 : 이제 '좋아요(Like)' 대신, 좋아요를 포함한 전체 '반응(Reaction)' 이 표시됩니다. 다음 설명을 참조하세요 : ");
             $("#lblSbNoteReactionLink").text("[링크]");
             $("#lblSbNoteId").text("노트 #2 : 결과에 표시되는 유저 ID는, 실제 유저 ID가 아닌 App-scoped ID입니다. 다음 설명을 참조하세요 : ");

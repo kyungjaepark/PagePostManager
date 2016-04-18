@@ -24,7 +24,7 @@ function generateReactionsHtml(reactionsMap) {
 }
 
 var getCommentsHtml_errorCount = 0;
-function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReactions, isShowCommentLink, isSkipUnknownUser) {
+function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReactions, isShowCommentLink, isSkipUnknownUser, isShowTopInfo) {
     getCommentsHtml_errorCount = 0;
     var commentsArray = [];
     for (var i = 0; i < results.length; i++) {
@@ -53,7 +53,11 @@ function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReaction
     }
 
     var stringBuilder = [];
-    stringBuilder.push("<tr>");
+	
+	if (isShowTopInfo)
+		stringBuilder.push(String.format('<caption style="text-align:left">Result : <a href="{0}">{0}</a><br/></caption>', g_appContext.postLoader.permalink_url));
+
+	stringBuilder.push("<tr>");
     if (isShowReactions)
         stringBuilder.push("<td>Post Reaction</td>");
     stringBuilder.push("<td>ID</td>");

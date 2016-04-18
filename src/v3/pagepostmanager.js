@@ -488,7 +488,7 @@ function getComments() {
         $('#tblResultTable').find('tr').remove();
         $('#tblResultTable').addClass('hidden');
         tblResultTable.innerHTML = getCommentsHtml(results, reactionsMap, chkShowAttachment.checked, chkReactions.checked, chkCommentLink.checked,
-            $('#chkSkipUnknownUser').prop('checked'));
+            $('#chkSkipUnknownUser').prop('checked'), $('#chkShowTopInfo').prop('checked'));
         if (getCommentsHtml_errorCount > 0)
             alert(String.format(SimpleTranslator.getKey('from_not_found'), getCommentsHtml_errorCount));
         sorttable.makeSortable(tblResultTable);
