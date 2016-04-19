@@ -26,7 +26,8 @@
     <meta property="fb:app_id" content="624861190962222" />
     <meta property="og:image" content="http://kyungjaepark.com/pagepostmanager/pagepostmanager.png" />
     <meta property="og:title" content="Page Post Manager / 페이지 게시물 매니저" />
-    <meta property="og:description" content="Get reactions and comments of post in a single click! / 게시물의 좋아요와 댓글 목록을 클릭 한번에!" />
+    <meta property="og:description" content="Get reactions and comments of post in a single click! / 게시물의 좋아요와 댓글 목록을 클릭 한번에!"
+    />
 
     <body style='display:none'>
         <div class="alert alert-info text-center" role="alert">
@@ -145,70 +146,70 @@
 
                 <table id="tblShortSummary" class="table table-bordered table-hover text-left" style='margin:auto; max-width:600px'></table>
                 <br/>
-            <div id='reportOption'>
-            <h3 id='lblReportOption'>Report Option</h3>
-                <table style='margin:auto; max-width:600px' class='text-left'>
-                    <tr>
-                        <td>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="chkShowAttachment" checked><span id="lblSbOptAtt">Include Attachments</span>
-                            </label>
-                            <br/>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="chkReactions" checked><span id="lblSbOptPostReactions">Include PostReactions</span>
-                            </label>
-                            <br/>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="chkCommentLink" checked><span id="lblSbOptCommentLink">Show Comment Link</span>
-                            </label>
-                            <br/>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="chkSkipUnknownUser" checked><span id="lblSkipUnknownUser">Skip comments from unknown user</span>
-                            </label>
-							<br/>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" id="chkShowTopInfo"><span id="lblShowTopInfo">Show additional information on top of comments table</span>
-                            </label>
-                            <br/>
-                            <br/>
-                            <button id="btnLoadReactions" class="btn btn-default">Get Reactions</button>
-                            <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
-                            <br/>
-                        </td>
-                    </tr>
-                </table>
-                <br/>
-            </div>
-            <div id='reportResult'>
-            <h3 id='lblReportResult'>Report Result</h3>
-				<span id="lblSbNoteReaction">Note #1 : 'Like' is now 'Reaction', which includes like(s). For further information, please check</span>
-				<a href="http://newsroom.fb.com/news/2016/02/reactions-now-available-globally/" target="_blank" id="lblSbNoteReactionLink">this article</a>.
-				<br/>
-				<img src='res/reactions.png'>
-				<br/>
-				<br/>
-				
-                <span id="lblSbNoteId">Note #2 : User ID in the result table is user's app-scoped ID, not real ID. For further information, please check </span>
-                <a href="https://developers.facebook.com/docs/apps/upgrading#upgrading_v2_0_user_ids" target="_blank" id="lblSbNoteLink">this article</a>.
-                <br/>
-                <br/>
-                <div id="divResultButtons">
-                    <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only)</button>
+                <div id='reportOption'>
+                    <h3 id='lblReportOption'>Report Option</h3>
+                    <table style='margin:auto; max-width:600px' class='text-left'>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="chkShowAttachment" checked><span id="lblSbOptAtt">Include Attachments</span>
+                                </label>
+                                <br/>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="chkReactions" checked><span id="lblSbOptPostReactions">Include PostReactions</span>
+                                </label>
+                                <br/>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="chkCommentLink" checked><span id="lblSbOptCommentLink">Show Comment Link</span>
+                                </label>
+                                <br/>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="chkSkipUnknownUser" checked><span id="lblSkipUnknownUser">Skip comments from unknown user</span>
+                                </label>
+                                <br/>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="chkShowTopInfo"><span id="lblShowTopInfo">Show additional information on top of comments table</span>
+                                </label>
+                                <br/>
+                                <br/>
+                                <button id="btnLoadReactions" class="btn btn-default">Get Reactions</button>
+                                <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
+                                <br/>
+                            </td>
+                        </tr>
+                    </table>
                     <br/>
-                    <button id="btnExportResultAttachmentsZip" class="btn btn-warning" style='margin-top:5px'>Download Attachments as .zip (Chrome only)</button>
-                    <br/>
-                    <button id="btnShowResultTable" class="btn btn-info" style='margin-top:5px'>Show Result Table</button>
-                    <br/>
-                    <button id="btnShowResultTableNewWindow" class="btn btn-info" style='margin-top:5px'>Show Result Table in New Window</button>
                 </div>
-                <br/>
-                <button id="btnChangeOption" class="btn btn-success">Change Report Option</button>
-                <br/>
-                <br/>
-                <div class='text-left' style='margin:20px'>
-                    <table id="tblResultTable" class="table table-bordered table-hover"></table>
+                <div id='reportResult'>
+                    <h3 id='lblReportResult'>Report Result</h3>
+                    <span id="lblSbNoteReaction">Note #1 : 'Like' is now 'Reaction', which includes like(s). For further information, please check</span>
+                    <a href="http://newsroom.fb.com/news/2016/02/reactions-now-available-globally/" target="_blank" id="lblSbNoteReactionLink">this article</a>.
+                    <br/>
+                    <img src='res/reactions.png'>
+                    <br/>
+                    <br/>
+
+                    <span id="lblSbNoteId">Note #2 : User ID in the result table is user's app-scoped ID, not real ID. For further information, please check </span>
+                    <a href="https://developers.facebook.com/docs/apps/upgrading#upgrading_v2_0_user_ids" target="_blank" id="lblSbNoteLink">this article</a>.
+                    <br/>
+                    <br/>
+                    <div id="divResultButtons">
+                        <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only)</button>
+                        <br/>
+                        <button id="btnExportResultAttachmentsZip" class="btn btn-warning" style='margin-top:5px'>Download Attachments as .zip (Chrome only)</button>
+                        <br/>
+                        <button id="btnShowResultTable" class="btn btn-info" style='margin-top:5px'>Show Result Table</button>
+                        <br/>
+                        <button id="btnShowResultTableNewWindow" class="btn btn-info" style='margin-top:5px'>Show Result Table in New Window</button>
+                    </div>
+                    <br/>
+                    <button id="btnChangeOption" class="btn btn-success">Change Report Option</button>
+                    <br/>
+                    <br/>
+                    <div class='text-left' style='margin:20px'>
+                        <table id="tblResultTable" class="table table-bordered table-hover"></table>
+                    </div>
                 </div>
-            </div>
             </div>
 
             <div id='group-post-extractor' class='hidden' style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background-color:lightgray;'>
@@ -218,8 +219,8 @@
                 <div id='gpe-welcome'>
                     <button id='gpe-start'>Start</button>
                     <br/>
+                    <br/> Options
                     <br/>
-                    Options<br/>
                     <div id="datetimepickers" style='position:relative'>
                         <input type="checkbox" id="gep-check-range"><span id="getp-check-range-label">기간 내 검색 : </span>
                         <input type='text' id='gpe-datetimepicker-from' /> ~
