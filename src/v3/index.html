@@ -145,12 +145,11 @@
 
                 <table id="tblShortSummary" class="table table-bordered table-hover text-left" style='margin:auto; max-width:600px'></table>
                 <br/>
+            <div id='reportOption'>
+            <h3 id='lblReportOption'>Report Option</h3>
                 <table style='margin:auto; max-width:600px' class='text-left'>
                     <tr>
                         <td>
-                            <button id="btnLoadReactions" class="btn btn-default">Get Reactions</button>
-                            <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
-                            <br/>
                             <label class="checkbox-inline">
                                 <input type="checkbox" id="chkShowAttachment" checked><span id="lblSbOptAtt">Include Attachments</span>
                             </label>
@@ -170,10 +169,18 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox" id="chkShowTopInfo"><span id="lblShowTopInfo">Show additional information on top of comments table</span>
                             </label>
+                            <br/>
+                            <br/>
+                            <button id="btnLoadReactions" class="btn btn-default">Get Reactions</button>
+                            <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
+                            <br/>
                         </td>
                     </tr>
                 </table>
                 <br/>
+            </div>
+            <div id='reportResult'>
+            <h3 id='lblReportResult'>Report Result</h3>
 				<span id="lblSbNoteReaction">Note #1 : 'Like' is now 'Reaction', which includes like(s). For further information, please check</span>
 				<a href="http://newsroom.fb.com/news/2016/02/reactions-now-available-globally/" target="_blank" id="lblSbNoteReactionLink">this article</a>.
 				<br/>
@@ -188,16 +195,20 @@
                 <div id="divResultButtons">
                     <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only)</button>
                     <br/>
-                    <button id="btnExportResultAttachmentsZip" class="btn btn-warning" style='margin-top:5px'>Download Attachments as .zip (Chrome only, EXPERIMENTAL)</button>
+                    <button id="btnExportResultAttachmentsZip" class="btn btn-warning" style='margin-top:5px'>Download Attachments as .zip (Chrome only)</button>
                     <br/>
                     <button id="btnShowResultTable" class="btn btn-info" style='margin-top:5px'>Show Result Table</button>
                     <br/>
                     <button id="btnShowResultTableNewWindow" class="btn btn-info" style='margin-top:5px'>Show Result Table in New Window</button>
                 </div>
                 <br/>
+                <button id="btnChangeOption" class="btn btn-success">Change Report Option</button>
+                <br/>
+                <br/>
                 <div class='text-left' style='margin:20px'>
                     <table id="tblResultTable" class="table table-bordered table-hover"></table>
                 </div>
+            </div>
             </div>
 
             <div id='group-post-extractor' class='hidden' style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background-color:lightgray;'>

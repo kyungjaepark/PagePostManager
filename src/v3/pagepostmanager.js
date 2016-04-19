@@ -443,6 +443,9 @@ function trySetupPost(postId, successCallback, failCallback) {
         });
     }
 
+    $('#reportOption').removeClass('hidden');
+    $('#reportResult').addClass('hidden');
+
     g_appContext.postLoader.init(postId, $('#graph-api-locale').val(), function(response) {
         $('#tblShortSummary').find('tr').remove();
         $('#tblResultTable').find('tr').remove();
@@ -468,6 +471,8 @@ function post_loadSuccess() {
 function getReactions() {
     $('#tblResultTable').find('tr').remove();
     g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function() {
+        $('#reportOption').addClass('hidden');
+        $('#reportResult').removeClass('hidden');
         $('#tblResultTable').addClass('hidden');
         tblResultTable.innerHTML = generateReactionsHtml(g_appContext.postLoader.getReactionsMap());
         sorttable.makeSortable(tblResultTable);
@@ -485,7 +490,8 @@ function getComments() {
         if (chkReactions.checked)
             reactionsMap = g_appContext.postLoader.getReactionsMap();
 
-        $('#tblResultTable').find('tr').remove();
+        $('#reportOption').addClass('hidden');
+        $('#reportResult').removeClass('hidden');
         $('#tblResultTable').addClass('hidden');
         tblResultTable.innerHTML = getCommentsHtml(results, reactionsMap, chkShowAttachment.checked, chkReactions.checked, chkCommentLink.checked,
             $('#chkSkipUnknownUser').prop('checked'), $('#chkShowTopInfo').prop('checked'));
@@ -508,6 +514,8 @@ function wireEvents_post() {
     $('#btnExportResultAttachmentsZip').click(function() { startDownloadAttachments(); });
     $('#btnShowResultTable').click(function() { $('#tblResultTable').removeClass('hidden'); });
     $('#btnShowResultTableNewWindow').click(function() { writeToNewTable($('#tblResultTable')); });
+    $('#btnChangeOption').click(function() { $('#reportOption').removeClass('hidden'); $('#reportResult').addClass('hidden');
+; });
 }
 
 function startDownloadAttachments()

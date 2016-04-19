@@ -62,8 +62,8 @@ PostLoader.prototype.launchLoaderModal = function(modal, loadReactions, loadComm
     var commentsLoaded = (this.commentsLoader.status == 2);
     var dataNotLoaded = (loadReactions && !reactionsLoaded || loadComments && !commentsLoaded);
     if (dataNotLoaded == false) {
-        modal.modal("show");
-        setTimeout(new function() { modal.modal("hide"); }, 1400);
+        // modal.modal("show");
+        // setTimeout(new function() { modal.modal("hide"); }, 1400);
         loadCompleteCallback();
         return;
     }
