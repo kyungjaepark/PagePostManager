@@ -2,7 +2,7 @@ function PostLoader() {
     this.reset();
 }
 
-PostLoader.prototype.reset = function() {
+PostLoader.prototype.reset = function () {
     this.isWebsite = false;
     this.reactionsLoader = new FbApiListLoader();
     this.commentsLoader = new FbApiListLoader();
@@ -12,31 +12,31 @@ PostLoader.prototype.reset = function() {
     this.commentsCount = 0;
     this.loadReactions = false;
     this.loadComments = false;
-    this.loadCompleteCallback = function() { };
+    this.loadCompleteCallback = function () { };
     this.dialog = null;
     this.modal = null;
     this.locale = 'en_US';
 }
 
-PostLoader.prototype.stop = function() {
+PostLoader.prototype.stop = function () {
     this.reactionsLoader.stop();
     this.commentsLoader.stop();
 }
 
-PostLoader.prototype.init = function(postId, locale, successCallback, failCallback) {
+PostLoader.prototype.init = function (postId, locale, successCallback, failCallback) {
     this.postId = postId;
     this.locale = locale;
     var _self = this;
     FB.api(
         "/" + this.postId,
-        {'fields': 'type'},
-        function(response) {
+        { 'fields': 'type' },
+        function (response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
                 return;
             }
-            
-            _self.isWebsite = (response['type'] == 'website'); 
+
+            _self.isWebsite = (response['type'] == 'website');
             var fieldList = 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type';
             if (_self.isWebsite)
                 fieldList = 'id,title,url,updated_time,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)';
@@ -44,7 +44,7 @@ PostLoader.prototype.init = function(postId, locale, successCallback, failCallba
             FB.api(
                 "/" + _self.postId,
                 { 'fields': fieldList, locale: _self.locale },
-                function(response) {
+                function (response) {
                     if (is_defined(response.error) && is_defined(failCallback)) {
                         failCallback(response);
                         return;
@@ -54,12 +54,12 @@ PostLoader.prototype.init = function(postId, locale, successCallback, failCallba
         });
 }
 
-PostLoader.prototype.parseSummary = function(response, callback) {
+PostLoader.prototype.parseSummary = function (response, callback) {
     if (this.isWebsite)
         this.permalink_url = response.url;
     else
         this.permalink_url = response.permalink_url;
-    
+
     this.reactionsCount = 0;
     if (isPropertyExists(response, ["reactions", "summary"]))
         this.reactionsCount = Math.floor(response.reactions.summary.total_count);
@@ -75,7 +75,7 @@ PostLoader.prototype.parseSummary = function(response, callback) {
 
 }
 
-PostLoader.prototype.launchLoaderModal = function(modal, loadReactions, loadComments, loadCompleteCallback) {
+PostLoader.prototype.launchLoaderModal = function (modal, loadReactions, loadComments, loadCompleteCallback) {
     var reactionsLoaded = (this.reactionsLoader.status == 2);
     var commentsLoaded = (this.commentsLoader.status == 2);
     var dataNotLoaded = (loadReactions && !reactionsLoaded || loadComments && !commentsLoaded);
@@ -96,18 +96,20 @@ PostLoader.prototype.launchLoaderModal = function(modal, loadReactions, loadComm
     if (_self.loadReactions && _self.reactionsLoader.status == 0) {
         _self.reactionsLoader.api("/" + _self.postId + "/reactions"
             , { limit: '200', fields: 'id,name,type', locale: _self.locale }
-            , function(fbApiListLoader) { _self.onLoaderTaskComplete(); }
-            , function(fbApiListLoader) { $('#prgLoadReactionsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
+            , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
+            , function (fbApiListLoader) { $('#prgLoadReactionsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
         );
     }
     if (_self.loadComments && _self.commentsLoader.status == 0) {
         _self.commentsLoader.api(
             "/" + _self.postId + "/comments"
-            , { filter: 'stream', limit: '200',
-            locale: _self.locale,
-             fields: 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c' }
-            , function(fbApiListLoader) { _self.onLoaderTaskComplete(); }
-            , function(fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
+            , {
+                filter: 'stream', limit: '200',
+                locale: _self.locale,
+                fields: 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c'
+            }
+            , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
+            , function (fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
         );
     }
     //	});
@@ -116,7 +118,7 @@ PostLoader.prototype.launchLoaderModal = function(modal, loadReactions, loadComm
     this.modal.modal("show");
 }
 
-PostLoader.prototype.onLoaderTaskComplete = function() {
+PostLoader.prototype.onLoaderTaskComplete = function () {
     var reactionsLoaded = (this.reactionsLoader.status == 2);
     var commentsLoaded = (this.commentsLoader.status == 2);
     if (reactionsLoaded)
@@ -131,10 +133,10 @@ PostLoader.prototype.onLoaderTaskComplete = function() {
     }
 }
 
-PostLoader.prototype.getReactionsMap = function() {
+PostLoader.prototype.getReactionsMap = function () {
     var resultTable = {};
-    $.each(this.reactionsLoader.resultArray, function() {
-        resultTable[stringify(this["id"])] = {name:this["name"], reaction_type:this["type"]};
+    $.each(this.reactionsLoader.resultArray, function () {
+        resultTable[stringify(this["id"])] = { name: this["name"], reaction_type: this["type"] };
     });
     return resultTable;
 }

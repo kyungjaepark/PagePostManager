@@ -24,7 +24,7 @@ function switchPage(pageName) {
     $('#page-' + pageName).removeClass('hidden');
     $('html,body').scrollTop(0);
 }
-$().ready(function() { main(); });
+$().ready(function () { main(); });
 
 function main() {
     $('body').css('display', '');
@@ -56,7 +56,7 @@ function wireEvents() {
 function initGraphApiLocale() {
     $('#graph-api-locale').html('');
     var locale_array = [['en_US', 'English(US)'], ['ko_KR', '한국어']];
-    $.each(locale_array, function() {
+    $.each(locale_array, function () {
         $('<option>')
             .attr('value', this[0])
             .text(this[1])
@@ -77,7 +77,7 @@ function applyFragmentValue() {
         trySetupBoard(
             hashValue.substr(6),
             board_loadSuccess,
-            function() {
+            function () {
                 alert(SimpleTranslator.getKey('fatal_error')); // TODO
             });
         return;
@@ -86,7 +86,7 @@ function applyFragmentValue() {
         trySetupPost(
             hashValue.substr(5),
             post_loadSuccess,
-            function() {
+            function () {
                 alert(SimpleTranslator.getKey('fatal_error')); // TODO
             });
         return;
@@ -125,7 +125,7 @@ function processBasicLogin() {
 
 function onBtnBasicLoginClick() {
     $('#btn-basic-login').prop('disabled', true);
-    FB.login(function(response) {
+    FB.login(function (response) {
         fbmanager.refreshPermission(processBasicLogin);
     }, { scope: g_appConfig.basicPermissions, return_scopes: true });
 }
@@ -158,8 +158,8 @@ function onBtnSearchMyPagesClick() {
         onSuccess();
     }
     else {
-        FB.login(function(response) {
-            fbmanager.refreshPermission(function() {
+        FB.login(function (response) {
+            fbmanager.refreshPermission(function () {
                 if (fbmanager.checkForLackingPermission(lackingPermission).length == 0)
                     onSuccess();
                 else {
@@ -180,8 +180,8 @@ function onBtnSearchMyGroupsClick() {
         onSuccess();
     }
     else {
-        FB.login(function(response) {
-            fbmanager.refreshPermission(function() {
+        FB.login(function (response) {
+            fbmanager.refreshPermission(function () {
                 if (fbmanager.checkForLackingPermission(lackingPermission).length == 0)
                     onSuccess();
                 else {
@@ -206,7 +206,7 @@ function searchPage_startRequest(apiPrefix, param, searchType) {
     $('#tbl-page-search-result tr:gt(0)').remove();
     $('#page-search-result').addClass('hidden');
     $('#page-search-result-empty').addClass('hidden');
-    FB.api(apiPrefix, param, function(response) { searchPage_processResult(response); });
+    FB.api(apiPrefix, param, function (response) { searchPage_processResult(response); });
 }
 
 function searchPage_processResult(response) {
@@ -215,7 +215,7 @@ function searchPage_processResult(response) {
         .attr('width', '14')
         .css('margin-left', '3px');
 
-    $.each(response.data, function() {
+    $.each(response.data, function () {
         var curRow = $('<tr>')
             .addClass("ex-hand-cursor")
             .click(searchPage_onPageSelection)
@@ -268,7 +268,7 @@ function searchPage_processResult(response) {
 }
 function onBtnPageSearchResultMoreClick() {
     $(this).prop('disabled', true);
-    FB.api($(this).attr('api'), function(response) { searchPage_processResult(response); });
+    FB.api($(this).attr('api'), function (response) { searchPage_processResult(response); });
 }
 
 function searchPage_onPageSelection() {
@@ -278,9 +278,8 @@ function searchPage_onPageSelection() {
 // facebook comment plugin -----------------------------------------------------
 
 function onBtnParseCommentPluginClick() {
-    FB.api('/?id=' + $('#txt-comment-plugin-data').val(), function(response)
-    {
-    	setCommandFragment("post:" + response["og_object"].id);
+    FB.api('/?id=' + $('#txt-comment-plugin-data').val(), function (response) {
+        setCommandFragment("post:" + response["og_object"].id);
     });
 }
 
@@ -293,7 +292,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
             fields: "id,metadata{type},name",
             locale: $('#graph-api-locale').val(),
         },
-        function(response) {
+        function (response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
                 return;
@@ -315,14 +314,16 @@ function board_loadSuccess() {
 
     $("#group-post-extract-div").addClass('hidden');
     //if (g_appContext.boardInfo.type == 'group')
-        $("#group-post-extract-div").removeClass('hidden');
+    $("#group-post-extract-div").removeClass('hidden');
 
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
-        { 'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
-    locale:$('#graph-api-locale').val() },
-        function(response) {
+        {
+            'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
+            locale: $('#graph-api-locale').val()
+        },
+        function (response) {
             board_processResult(response);
         });
 }
@@ -390,7 +391,7 @@ function generatePostInfoTr(responseData) {
 }
 
 function board_processResult(response) {
-    $.each(response.data, function() {
+    $.each(response.data, function () {
         generatePostInfoTr(this)
             .addClass("ex-hand-cursor")
             .click(board_onPostSelection)
@@ -414,7 +415,7 @@ function board_processResult(response) {
 }
 function onBtnBoardPostListMoreClick() {
     $(this).prop('disabled', true);
-    FB.api($(this).attr('api'), function(response) { board_processResult(response); });
+    FB.api($(this).attr('api'), function (response) { board_processResult(response); });
 }
 function board_onPostSelection() {
     setCommandFragment("post:" + $(this).attr('id'));
@@ -423,13 +424,13 @@ function board_onPostSelection() {
 // post (todo) -----------------------------------------------------------------
 
 jQuery.fn.extend({
-    _k_progressBarValue: function(value) {
+    _k_progressBarValue: function (value) {
         var ret = this.attr('aria-valuenow', value);
         recalcProgressBar(this);
         return ret;
     },
 
-    _k_progressBarMax: function(value) {
+    _k_progressBarMax: function (value) {
         var ret = this.attr('aria-valuemax', value);
         recalcProgressBar(this);
         return ret;
@@ -460,7 +461,7 @@ function trySetupPost(postId, successCallback, failCallback) {
     $('#reportOption').removeClass('hidden');
     $('#reportResult').addClass('hidden');
 
-    g_appContext.postLoader.init(postId, $('#graph-api-locale').val(), function(response) {
+    g_appContext.postLoader.init(postId, $('#graph-api-locale').val(), function (response) {
         $('#tblShortSummary').find('tr').remove();
         $('#tblResultTable').find('tr').remove();
 
@@ -484,7 +485,7 @@ function post_loadSuccess() {
 
 function getReactions() {
     $('#tblResultTable').find('tr').remove();
-    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function() {
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function () {
         $('#reportOption').addClass('hidden');
         $('#reportResult').removeClass('hidden');
         $('#tblResultTable').addClass('hidden');
@@ -498,7 +499,7 @@ function getReactions() {
 
 function getComments() {
     $('#tblResultTable').find('tr').remove();
-    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkReactions.checked, true, function() {
+    g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkReactions.checked, true, function () {
         var results = g_appContext.postLoader.commentsLoader.resultArray;
         var reactionsMap = {};
         if (chkReactions.checked)
@@ -521,22 +522,23 @@ function getComments() {
 function wireEvents_post() {
     $("#prgLoadReactionsInfo")._k_progressBarValue(0);
     $("#prgLoadCommentsInfo")._k_progressBarValue(0);
-    $('#btnLoadSummary').click(function() { getReactions(); });
-    $('#btnLoadReactions').click(function() { getReactions(); });
-    $('#btnLoadComments').click(function() { getComments(); });
-    $('#btnExportResultTable').click(function() { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
-    $('#btnExportResultAttachmentsZip').click(function() { startDownloadAttachments(); });
-    $('#btnShowResultTable').click(function() { $('#tblResultTable').removeClass('hidden'); });
-    $('#btnShowResultTableNewWindow').click(function() { writeToNewTable($('#tblResultTable')); });
-    $('#btnChangeOption').click(function() { $('#reportOption').removeClass('hidden'); $('#reportResult').addClass('hidden');
-; });
+    $('#btnLoadSummary').click(function () { getReactions(); });
+    $('#btnLoadReactions').click(function () { getReactions(); });
+    $('#btnLoadComments').click(function () { getComments(); });
+    $('#btnExportResultTable').click(function () { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
+    $('#btnExportResultAttachmentsZip').click(function () { startDownloadAttachments(); });
+    $('#btnShowResultTable').click(function () { $('#tblResultTable').removeClass('hidden'); });
+    $('#btnShowResultTableNewWindow').click(function () { writeToNewTable($('#tblResultTable')); });
+    $('#btnChangeOption').click(function () {
+        $('#reportOption').removeClass('hidden'); $('#reportResult').addClass('hidden');
+        ;
+    });
 }
 
-function startDownloadAttachments()
-{
+function startDownloadAttachments() {
     var attachmentsMap = {};
-    $.each(g_appContext.postLoader.commentsLoader.resultArray, function() {
-        if (isPropertyExists(this, ["attachment","media","image","src"]) == false)
+    $.each(g_appContext.postLoader.commentsLoader.resultArray, function () {
+        if (isPropertyExists(this, ["attachment", "media", "image", "src"]) == false)
             return true;
 
         var ext = '.jpg';
@@ -544,28 +546,25 @@ function startDownloadAttachments()
             ext = '.gif';
         if (this.attachment.media.image.src.indexOf('.png') >= 0)
             ext = '.png';
-        
+
         attachmentsMap[this.id] = {
-            localName:this.id + ext,
-            url:this.attachment.media.image.src,
-            blob:null
+            localName: this.id + ext,
+            url: this.attachment.media.image.src,
+            blob: null
         };
     })
 
     startDownloadAttachments_fetch(attachmentsMap);
 };
 
-function startDownloadAttachments_fetch(attachmentsMap)
-{
-    for (var t in attachmentsMap)
-    {
-        if (attachmentsMap[t].blob === null)
-        {
+function startDownloadAttachments_fetch(attachmentsMap) {
+    for (var t in attachmentsMap) {
+        if (attachmentsMap[t].blob === null) {
             // http://www.henryalgus.com/reading-binary-files-using-jquery-ajax/
             var xhr = new XMLHttpRequest();
             xhr.open('GET', attachmentsMap[t].url, true);
             xhr.responseType = 'arraybuffer'; //'blob';
-            xhr.onload = function(e) {
+            xhr.onload = function (e) {
                 if (this.status == 200) {
                     // get binary data as a response
                     attachmentsMap[t].blob = this.response;
@@ -581,9 +580,8 @@ function startDownloadAttachments_fetch(attachmentsMap)
     var zip = new JSZip();
     // zip.file("Hello.txt", "Hello World\n");
     var img = zip.folder("images");
-    for (var t in attachmentsMap)
-    {
-        img.file(attachmentsMap[t].localName, attachmentsMap[t].blob, {base64: true});
+    for (var t in attachmentsMap) {
+        img.file(attachmentsMap[t].localName, attachmentsMap[t].blob, { base64: true });
     }
 
     var html = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>';
@@ -593,24 +591,22 @@ function startDownloadAttachments_fetch(attachmentsMap)
             .clone()
             .attr('border', '1')
             .appendTo(new_body);
-            
+
         html += new_body[0].outerHTML;
-        for (var t in attachmentsMap)
-        {
+        for (var t in attachmentsMap) {
             var org = $('<div>').text(attachmentsMap[t].url).html();
-            var rep ='./images/' + attachmentsMap[t].localName;
-            while(org != '')
-            {
+            var rep = './images/' + attachmentsMap[t].localName;
+            while (org != '') {
                 var idx = html.indexOf(org);
                 if (idx < 0)
                     break;
                 html = html.substr(0, idx) + rep + html.substr(idx + org.length);
-            } 
+            }
         }
         zip.file('index.html', html);
     }
 
-    var content = zip.generate({type:"blob"});
+    var content = zip.generate({ type: "blob" });
     saveAs(content, "pagepostmanager_attachments.zip");
 }
 

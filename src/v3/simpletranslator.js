@@ -1,6 +1,6 @@
 SimpleTranslator = {
     locale: '',
-    init: function(param_locale) {
+    init: function (param_locale) {
         if (typeof param_locale === 'undefined')
             locale = window.navigator.userLanguage || window.navigator.language;
         else

@@ -2,7 +2,7 @@ function decorateMessageWithTags(message, message_tags) {
     var finalMessage = message + "";
     if (message_tags !== undefined) {
         var sortedMessageTags = message_tags.concat();
-        sortedMessageTags.sort(function(a, b) { return b["offset"] - a["offset"] });
+        sortedMessageTags.sort(function (a, b) { return b["offset"] - a["offset"] });
 
         var totalOffset = 0;
         for (var i = 0; i < sortedMessageTags.length; i++) {
@@ -53,11 +53,11 @@ function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReaction
     }
 
     var stringBuilder = [];
-	
-	if (isShowTopInfo)
-		stringBuilder.push(String.format('<caption style="text-align:left">Result : <a href="{0}">{0}</a><br/></caption>', g_appContext.postLoader.permalink_url));
 
-	stringBuilder.push("<tr>");
+    if (isShowTopInfo)
+        stringBuilder.push(String.format('<caption style="text-align:left">Result : <a href="{0}">{0}</a><br/></caption>', g_appContext.postLoader.permalink_url));
+
+    stringBuilder.push("<tr>");
     if (isShowReactions)
         stringBuilder.push("<td>Post Reaction</td>");
     stringBuilder.push("<td>ID</td>");
