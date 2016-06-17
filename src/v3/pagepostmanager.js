@@ -49,6 +49,7 @@ function wireEvents() {
     $('#btn-goto-search').click(onBtnGotoSearchClick);
     $('#btn-goto-post-list').click(onBtnGotoPostListClick);
     $('#btn-board-post-list-more').click(onBtnBoardPostListMoreClick);
+    $('#btn-parse-comment-plugin').click(onBtnParseCommentPluginClick);
     $(window).bind('hashchange', applyFragmentValue);
 }
 
@@ -274,6 +275,15 @@ function searchPage_onPageSelection() {
     setCommandFragment("board:" + $(this).attr('id'));
 }
 
+// facebook comment plugin -----------------------------------------------------
+
+function onBtnParseCommentPluginClick() {
+    FB.api('/?id=' + $('#txt-comment-plugin-data').val(), function(response)
+    {
+    	setCommandFragment("post:" + response["og_object"].id);
+    });
+}
+
 // board -----------------------------------------------------------------------
 
 function trySetupBoard(boardId, successCallback, failCallback) {
@@ -333,9 +343,10 @@ function generatePostInfoTr(responseData) {
     var curRow = $('<tr>');
 
     // image
-    $('<td>')
-        .append($('<img>').attr('src', responseData.picture).css('max-width', '150px').addClass("img-responsive"))
-        .appendTo(curRow);
+    var newTd = $('<td>').appendTo(curRow);
+    if (g_appContext.postLoader.isWebsite == false)
+        newTd.append($('<img>').attr('src', responseData.picture).css('max-width', '150px').addClass("img-responsive"));
+
 
     // text
     var textTd = $('<td>');
@@ -344,9 +355,12 @@ function generatePostInfoTr(responseData) {
     var header = "[?]";
     if (is_defined(responseData.from))
         header = responseData.from.name;
+    if (g_appContext.postLoader.isWebsite)
+        header = "(Website)";
     textTd.append($('<strong>').text(header));
     textTd.append($('<br/>'));
-    textTd.append($('<a>').text(responseData.permalink_url).attr('href', responseData.permalink_url));
+    var url = responseData.permalink_url || responseData.url;
+    textTd.append($('<a>').text(url).attr('href', url));
     textTd.append($('<br/>'));
 
     $('<strong>')
@@ -538,7 +552,7 @@ function startDownloadAttachments()
         };
     })
 
-    startDownloadAttachments_fetch(attachmentsMap);    
+    startDownloadAttachments_fetch(attachmentsMap);
 };
 
 function startDownloadAttachments_fetch(attachmentsMap)
@@ -558,12 +572,12 @@ function startDownloadAttachments_fetch(attachmentsMap)
                     startDownloadAttachments_fetch(attachmentsMap);
                 }
             };
-            
+
             xhr.send();
             return;
         }
     }
-    
+
     var zip = new JSZip();
     // zip.file("Hello.txt", "Hello World\n");
     var img = zip.folder("images");
@@ -571,7 +585,7 @@ function startDownloadAttachments_fetch(attachmentsMap)
     {
         img.file(attachmentsMap[t].localName, attachmentsMap[t].blob, {base64: true});
     }
-    
+
     var html = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>';
     {
         var new_body = $('<body>');
@@ -595,7 +609,7 @@ function startDownloadAttachments_fetch(attachmentsMap)
         }
         zip.file('index.html', html);
     }
-    
+
     var content = zip.generate({type:"blob"});
     saveAs(content, "pagepostmanager_attachments.zip");
 }

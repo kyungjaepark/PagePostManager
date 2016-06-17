@@ -9,7 +9,7 @@ SimpleTranslator = {
     translate: function () {
 
         if (locale == 'ko' || locale == 'koKR' || locale == 'ko-KR') {
-            $("#lblSbBigTitle").html('PagePostManager v2 :: 페이스북용 페이지/그룹 게시물 매니저');
+            $("#lblSbBigTitle").html('PagePostManager v3 :: 페이스북용 페이지/그룹 게시물 매니저');
             $("#lblSbWelcome").html('게시물 댓글을 추출하려고 "댓글 더 보기" 버튼을 누르느라 지치셨나요??<br/>'
                 + '클릭 한 번으로, 순식간에 모든 댓글과 좋아요를 모아보세요.');
             $('#sb-locale').html("추출 시 기본 언어 : ");
@@ -57,6 +57,10 @@ SimpleTranslator = {
             $("#lblReportOption").text("보고서 옵션");
             $("#lblReportResult").text("보고서 결과");
             $("#btnChangeOption").text("보고서 옵션 조정");
+
+            $("#sb-extract-from-comment-plugin").text("페이스북 댓글 소셜 플러그인 결과 추출");
+            $("#btn-parse-comment-plugin").text("결과 추출");
+            $("#sb-comment-plugin-data-href").text("data-href값 (URL)");
         }
     },
     getKey: function (key) {

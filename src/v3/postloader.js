@@ -3,6 +3,7 @@ function PostLoader() {
 }
 
 PostLoader.prototype.reset = function() {
+    this.isWebsite = false;
     this.reactionsLoader = new FbApiListLoader();
     this.commentsLoader = new FbApiListLoader();
     this.postId = 0;
@@ -28,19 +29,36 @@ PostLoader.prototype.init = function(postId, locale, successCallback, failCallba
     var _self = this;
     FB.api(
         "/" + this.postId,
-        { 'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
-    locale: this.locale },
+        {'fields': 'type'},
         function(response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
                 return;
             }
-            _self.parseSummary(response, successCallback);
+            
+            _self.isWebsite = (response['type'] == 'website'); 
+            var fieldList = 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type';
+            if (_self.isWebsite)
+                fieldList = 'id,title,url,updated_time,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)';
+
+            FB.api(
+                "/" + _self.postId,
+                { 'fields': fieldList, locale: _self.locale },
+                function(response) {
+                    if (is_defined(response.error) && is_defined(failCallback)) {
+                        failCallback(response);
+                        return;
+                    }
+                    _self.parseSummary(response, successCallback);
+                });
         });
 }
 
 PostLoader.prototype.parseSummary = function(response, callback) {
-    this.permalink_url = response.permalink_url;
+    if (this.isWebsite)
+        this.permalink_url = response.url;
+    else
+        this.permalink_url = response.permalink_url;
     
     this.reactionsCount = 0;
     if (isPropertyExists(response, ["reactions", "summary"]))
