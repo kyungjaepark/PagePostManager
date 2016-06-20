@@ -340,12 +340,12 @@ function onBtnGotoPostListClick() {
     setCommandFragment('board:' + g_appContext.boardInfo.id);
 }
 
-function generatePostInfoTr(responseData) {
+function generatePostInfoTr(responseData, isWebsite) {
     var curRow = $('<tr>');
 
     // image
     var newTd = $('<td>').appendTo(curRow);
-    if (g_appContext.postLoader.isWebsite == false)
+    if (isWebsite == false)
         newTd.append($('<img>').attr('src', responseData.picture).css('max-width', '150px').addClass("img-responsive"));
 
 
@@ -356,7 +356,7 @@ function generatePostInfoTr(responseData) {
     var header = "[?]";
     if (is_defined(responseData.from))
         header = responseData.from.name;
-    if (g_appContext.postLoader.isWebsite)
+    if (isWebsite)
         header = "(Website)";
     textTd.append($('<strong>').text(header));
     textTd.append($('<br/>'));
@@ -392,7 +392,7 @@ function generatePostInfoTr(responseData) {
 
 function board_processResult(response) {
     $.each(response.data, function () {
-        generatePostInfoTr(this)
+        generatePostInfoTr(this, false)
             .addClass("ex-hand-cursor")
             .click(board_onPostSelection)
             .attr('id', this.id)
@@ -468,7 +468,7 @@ function trySetupPost(postId, successCallback, failCallback) {
         var _tr = $('<tr>').appendTo($('#tblShortSummary'));
         $('<td>').appendTo(_tr).text('Image');
         $('<td>').appendTo(_tr).text('Text');
-        $('#tblShortSummary').append(generatePostInfoTr(response));
+        $('#tblShortSummary').append(generatePostInfoTr(response, g_appContext.postLoader.isWebsite));
         ga('send', 'event', g_appContext.boardInfo.type, 'post', postId);
         successCallback(response);
     }, failCallback);
