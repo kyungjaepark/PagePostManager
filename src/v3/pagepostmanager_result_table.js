@@ -7,9 +7,13 @@ function decorateMessageWithTags(message, message_tags) {
         var totalOffset = 0;
         for (var i = 0; i < sortedMessageTags.length; i++) {
             var curOffset = sortedMessageTags[i]["offset"];
-            var curLength = message_tags[i]["length"];
-            var resultHTML = "<a href='http://facebook.com/" + message_tags[i]["id"] + "' target='_blank'>" + message_tags[i]["name"] + "</a>";
-            finalMessage = finalMessage.substring(0, curOffset) + resultHTML + finalMessage.substring(curOffset + curLength);
+            var curLength = sortedMessageTags[i]["length"];
+            var resultHTML = "<a href='http://facebook.com/" + sortedMessageTags[i]["id"] + "' target='_blank'>"
+                + UnicodeSubstring.substring(finalMessage, curOffset, curOffset + curLength) // sortedMessageTags[i]["name"]
+                + "</a>";
+            finalMessage = UnicodeSubstring.substring(finalMessage, 0, curOffset)
+                + resultHTML
+                + UnicodeSubstring.substring(finalMessage, curOffset + curLength, finalMessage.length);
         }
     }
     return finalMessage;
@@ -63,8 +67,7 @@ function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReaction
         eachResult["json"] = JSON.stringify(curResult);
         eachResult["taggedUserCountInComment"] = getTaggedUserCount(eachResult["id"], curResult["message_tags"]);
         eachResult["taggedUserCountInPost"] = 0;
-        if (is_defined(tagMap))
-        {
+        if (is_defined(tagMap)) {
             if (is_defined(tagMap[eachResult["id"]]))
                 eachResult["taggedUserCountInPost"] = tagMap[eachResult["id"]].length;
         }

@@ -114,3 +114,55 @@ function getParamMap() {
 	return ret;
 }
 
+// https://github.com/lautis/unicode-substring/
+UnicodeSubstring = {
+	charAt: function (string, index) {
+		var first = string.charCodeAt(index);
+		var second;
+		if (first >= 0xD800 && first <= 0xDBFF && string.length > index + 1) {
+			second = string.charCodeAt(index + 1);
+			if (second >= 0xDC00 && second <= 0xDFFF) {
+				return string.substring(index, index + 2);
+			}
+		}
+		return string[index];
+	},
+
+	slice: function (string, start, end) {
+		var accumulator = "";
+		var character;
+		var stringIndex = 0;
+		var unicodeIndex = 0;
+		var length = string.length;
+
+		while (stringIndex < length) {
+			character = this.charAt(string, stringIndex);
+			if (unicodeIndex >= start && unicodeIndex < end) {
+				accumulator += character;
+			}
+			stringIndex += character.length;
+			unicodeIndex += 1;
+		}
+		return accumulator;
+	},
+
+	toNumber: function (value, fallback) {
+		if (value === undefined) {
+			return fallback;
+		} else {
+			return Number(value);
+		}
+	},
+
+	substring: function (string, start, end) {
+		var realStart = this.toNumber(start, 0);
+		var realEnd = this.toNumber(end, string.length);
+		if (realEnd == realStart) {
+			return "";
+		} else if (realEnd > realStart) {
+			return this.slice(string, realStart, realEnd);
+		} else {
+			return this.slice(string, realEnd, realStart);
+		}
+	}
+}
