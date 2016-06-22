@@ -15,6 +15,18 @@ function decorateMessageWithTags(message, message_tags) {
     return finalMessage;
 }
 
+function getTaggedUserCount(commentUserId, message_tags) {
+    if (is_defined(message_tags) == false)
+        return 0;
+    var tagList = [commentUserId];
+    for (var i = 0; i < message_tags.length; i++) {
+        var taggedUserId = message_tags[i]["id"];
+        if (tagList.indexOf(taggedUserId) < 0)
+            tagList.push(taggedUserId);
+    }
+    return tagList.length - 1;
+}
+
 function generateReactionsHtml(reactionsMap) {
     var stringBuilder = [];
     stringBuilder.push("<tr><th>ID</th><th>이름</th><th>반응</th></tr>");
@@ -24,7 +36,7 @@ function generateReactionsHtml(reactionsMap) {
 }
 
 var getCommentsHtml_errorCount = 0;
-function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReactions, isShowCommentLink, isSkipUnknownUser, isShowTopInfo) {
+function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReactions, isShowCommentLink, isSkipUnknownUser, isShowTopInfo, tagMap) {
     getCommentsHtml_errorCount = 0;
     var commentsArray = [];
     for (var i = 0; i < results.length; i++) {
@@ -49,6 +61,13 @@ function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReaction
         eachResult["attachmentUrl"] = parseAttachmentUrl(curResult["attachment"])["url"];
         eachResult["attachmentImage"] = parseAttachmentUrl(curResult["attachment"])["image"];
         eachResult["json"] = JSON.stringify(curResult);
+        eachResult["taggedUserCountInComment"] = getTaggedUserCount(eachResult["id"], curResult["message_tags"]);
+        eachResult["taggedUserCountInPost"] = 0;
+        if (is_defined(tagMap))
+        {
+            if (is_defined(tagMap[eachResult["id"]]))
+                eachResult["taggedUserCountInPost"] = tagMap[eachResult["id"]].length;
+        }
         commentsArray.push(eachResult);
     }
 
@@ -62,9 +81,11 @@ function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReaction
         stringBuilder.push("<td>Post Reaction</td>");
     stringBuilder.push("<td>ID</td>");
     if (isShowCommentLink)
-        stringBuilder.push("<td>Link</td>");
+        stringBuilder.push("<td>Comment Link</td>");
     stringBuilder.push("<td>Name</td><td>Date</td><td>Text</td>");
     stringBuilder.push("<td>Likes Count</td>");
+    stringBuilder.push("<td>Tagged User Count on This Comment</td>");
+    stringBuilder.push("<td>Tagged User Count in Entire Post</td>");
     if (isShowAttachment)
         stringBuilder.push("<td>Images</td>");
     stringBuilder.push("</tr>");
@@ -90,28 +111,19 @@ function getCommentsHtml(results, reactionsMap, isShowAttachment, isShowReaction
         if (isShowCommentLink) {
             tdCommentLink = '<td><a href="' + commentsArray[i]["link"] + '" target="_blank">Link</a></td>';
         }
-        stringBuilder.push(
-            String.format("<tr>" +
-                "{5}" +
-                "<td style='mso-number-format:\"\\@\"'>{0}</td>" +
-                "{8}" +
-                "<td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td>" +
-                "<td width='200' sorttable_customkey='{6}'>{2}</td>" +
-                "<td>{3}</td>" +
-                "<td>{7}</td>" +
-                "{4}" +
-                "</tr>"
-                , commentsArray[i]["id"]
-                , commentsArray[i]["name"]
-                , commentsArray[i]["time"]
-                , commentsArray[i]["htmlMessage"]
-                , attachmentTd
-                , tdReactions
-                , commentsArray[i]["timeRaw"]
-                , commentsArray[i]["commentLikes"]
-                , tdCommentLink
-            )
-        );
+        stringBuilder.push("<tr>");
+        stringBuilder.push(tdReactions);
+        stringBuilder.push(String.format("<td style='mso-number-format:\"\\@\"'>{0}</td>", commentsArray[i]["id"]));
+        stringBuilder.push(tdCommentLink);
+        stringBuilder.push(String.format("<td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td>"
+            , commentsArray[i]["id"], commentsArray[i]["name"]));
+        stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["time"]));
+        stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["htmlMessage"]));
+        stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["commentLikes"]));
+        stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["taggedUserCountInComment"]));
+        stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["taggedUserCountInPost"]));
+        stringBuilder.push(attachmentTd);
+        stringBuilder.push("</tr>");
     }
     return stringBuilder.join("");
 }

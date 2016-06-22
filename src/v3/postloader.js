@@ -140,3 +140,26 @@ PostLoader.prototype.getReactionsMap = function () {
     });
     return resultTable;
 }
+
+PostLoader.prototype.getTagMap = function () {
+    var resultTable = {};
+    $.each(this.commentsLoader.resultArray, function () {
+        var messageTags = this["message_tags"];
+        if (is_defined(messageTags) == false)
+            return true;
+
+        if (is_defined(this["from"]) == false)
+            return true;
+        var commentUserId = stringify(this["from"]["id"]);
+
+        if (is_defined(resultTable[commentUserId]) == false)
+            resultTable[commentUserId] = [];
+
+        for (var i = 0; i < messageTags.length; i++) {
+            var taggedUserId = stringify(messageTags[i]["id"]);
+            if (commentUserId != taggedUserId && resultTable[commentUserId].indexOf(taggedUserId) < 0)
+                resultTable[commentUserId].push(taggedUserId);
+        }
+    });
+    return resultTable;
+}

@@ -504,12 +504,14 @@ function getComments() {
         var reactionsMap = {};
         if (chkReactions.checked)
             reactionsMap = g_appContext.postLoader.getReactionsMap();
+        var tagMap = g_appContext.postLoader.getTagMap();
 
         $('#reportOption').addClass('hidden');
         $('#reportResult').removeClass('hidden');
         $('#tblResultTable').addClass('hidden');
         tblResultTable.innerHTML = getCommentsHtml(results, reactionsMap, chkShowAttachment.checked, chkReactions.checked, chkCommentLink.checked,
-            $('#chkSkipUnknownUser').prop('checked'), $('#chkShowTopInfo').prop('checked'));
+            $('#chkSkipUnknownUser').prop('checked'), $('#chkShowTopInfo').prop('checked'),
+            tagMap);
         if (getCommentsHtml_errorCount > 0)
             alert(String.format(SimpleTranslator.getKey('from_not_found'), getCommentsHtml_errorCount));
         sorttable.makeSortable(tblResultTable);
