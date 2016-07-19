@@ -163,3 +163,85 @@ PostLoader.prototype.getTagMap = function () {
     });
     return resultTable;
 }
+
+function decorateMessageWithTags(message, message_tags) {
+    var finalMessage = message + "";
+    if (message_tags !== undefined) {
+        var sortedMessageTags = message_tags.concat();
+        sortedMessageTags.sort(function (a, b) { return b["offset"] - a["offset"] });
+
+        var totalOffset = 0;
+        for (var i = 0; i < sortedMessageTags.length; i++) {
+            var curOffset = sortedMessageTags[i]["offset"];
+            var curLength = sortedMessageTags[i]["length"];
+            var resultHTML = "<a href='http://facebook.com/" + sortedMessageTags[i]["id"] + "' target='_blank'>"
+                + UnicodeSubstring.substring(finalMessage, curOffset, curOffset + curLength) // sortedMessageTags[i]["name"]
+                + "</a>";
+            finalMessage = UnicodeSubstring.substring(finalMessage, 0, curOffset)
+                + resultHTML
+                + UnicodeSubstring.substring(finalMessage, curOffset + curLength, finalMessage.length);
+        }
+    }
+    return finalMessage;
+}
+
+function getTaggedUserCount(commentUserId, message_tags) {
+    if (is_defined(message_tags) == false)
+        return 0;
+    var tagList = [commentUserId];
+    for (var i = 0; i < message_tags.length; i++) {
+        var taggedUserId = message_tags[i]["id"];
+        if (tagList.indexOf(taggedUserId) < 0)
+            tagList.push(taggedUserId);
+    }
+    return tagList.length - 1;
+}
+
+function parseAttachmentUrl(attachment) {
+    var result = { "url": "", "image": "" };
+    if (isPropertyExists(attachment, ["url"]) &&
+        isPropertyExists(attachment, ["media", "image", "src"])) {
+        result["url"] = attachment["url"];
+        result["image"] = attachment["media"]["image"]["src"];
+    }
+    return result;
+}
+
+var getCommentsArray_errorCount = 0;
+PostLoader.prototype.getCommentsArray = function (isSkipUnknownUser) {
+    var tagMap = this.getTagMap();
+    getCommentsArray_errorCount = 0;
+    var commentsArray = [];
+
+    for (var i = 0; i < this.commentsLoader.resultArray.length; i++) {
+        var curResult = this.commentsLoader.resultArray[i];
+        var eachResult = {};
+        if (is_defined(curResult["from"]) == false) {
+            if (isSkipUnknownUser)
+                continue;
+            eachResult["id"] = "(Error)";
+            eachResult["name"] = "(Error)";
+            getCommentsArray_errorCount++;
+        }
+        else {
+            eachResult["id"] = curResult["from"]["id"];
+            eachResult["name"] = curResult["from"]["name"];
+        }
+        eachResult["time"] = moment(curResult["created_time"]).format('YYYY-MM-DD HH:mm:ss');
+        eachResult["timeRaw"] = curResult["created_time"];
+        eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"]);
+        eachResult["link"] = String.format("https://www.facebook.com/{0}", curResult["id"]);
+        eachResult["commentLikes"] = curResult["like_count"];
+        eachResult["attachmentUrl"] = parseAttachmentUrl(curResult["attachment"])["url"];
+        eachResult["attachmentImage"] = parseAttachmentUrl(curResult["attachment"])["image"];
+        eachResult["json"] = JSON.stringify(curResult);
+        eachResult["taggedUserCountInComment"] = getTaggedUserCount(eachResult["id"], curResult["message_tags"]);
+        eachResult["taggedUserCountInPost"] = 0;
+        if (is_defined(tagMap)) {
+            if (is_defined(tagMap[eachResult["id"]]))
+                eachResult["taggedUserCountInPost"] = tagMap[eachResult["id"]].length;
+        }
+        commentsArray.push(eachResult);
+    }
+    return commentsArray;
+}

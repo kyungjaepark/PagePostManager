@@ -17,6 +17,7 @@ var g_appContext =
         postLoader: null,
         postDownloaderModal: null,
         currentFragment: undefined, // aka 'hash'
+        tableGenerationOption: {},
     }
 
 function switchPage(pageName) {
@@ -486,11 +487,14 @@ function post_loadSuccess() {
 function getReactions() {
     $('#tblResultTable').find('tr').remove();
     g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, true, false, function () {
+        g_appContext.tableGenerationOption = {
+            tableType: 'reactions',
+            reactionsMap: g_appContext.postLoader.getReactionsMap(),
+        };
+
         $('#reportOption').addClass('hidden');
         $('#reportResult').removeClass('hidden');
         $('#tblResultTable').addClass('hidden');
-        tblResultTable.innerHTML = generateReactionsHtml(g_appContext.postLoader.getReactionsMap());
-        sorttable.makeSortable(tblResultTable);
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
         ga('send', 'event', g_appContext.boardInfo.type, 'reactions', g_appContext.postLoader.postId, g_appContext.postLoader.reactionsLoader.resultArray.length);
@@ -500,25 +504,29 @@ function getReactions() {
 function getComments() {
     $('#tblResultTable').find('tr').remove();
     g_appContext.postLoader.launchLoaderModal(g_appContext.postDownloaderModal, chkReactions.checked, true, function () {
-        var results = g_appContext.postLoader.commentsLoader.resultArray;
-        var reactionsMap = {};
-        if (chkReactions.checked)
-            reactionsMap = g_appContext.postLoader.getReactionsMap();
-        var tagMap = g_appContext.postLoader.getTagMap();
+
+        g_appContext.tableGenerationOption = {
+            tableType: 'comments',
+            reactionsMap: chkReactions.checked ? g_appContext.postLoader.getReactionsMap() : {},
+            commentsArray: g_appContext.postLoader.getCommentsArray($('#chkSkipUnknownUser').prop('checked')),
+        };
+        if (getCommentsArray_errorCount > 0)
+            alert(String.format(SimpleTranslator.getKey('from_not_found'), getCommentsArray_errorCount));
 
         $('#reportOption').addClass('hidden');
         $('#reportResult').removeClass('hidden');
         $('#tblResultTable').addClass('hidden');
-        tblResultTable.innerHTML = getCommentsHtml(results, reactionsMap, chkShowAttachment.checked, chkReactions.checked, chkCommentLink.checked,
-            $('#chkSkipUnknownUser').prop('checked'), $('#chkShowTopInfo').prop('checked'),
-            tagMap);
-        if (getCommentsHtml_errorCount > 0)
-            alert(String.format(SimpleTranslator.getKey('from_not_found'), getCommentsHtml_errorCount));
-        sorttable.makeSortable(tblResultTable);
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
-        ga('send', 'event', g_appContext.boardInfo.type, 'comments', g_appContext.postLoader.postId, results.length);
+        ga('send', 'event', g_appContext.boardInfo.type, 'comments', g_appContext.postLoader.postId, g_appContext.tableGenerationOption["commentsArray"].length);
     });
+}
+
+function buildResultTable()
+{
+    $('#tblResultTable').find('tr').remove();
+    tblResultTable.innerHTML = getResultTableHtml(g_appContext.tableGenerationOption);
+    sorttable.makeSortable(tblResultTable);
 }
 
 function wireEvents_post() {
@@ -527,10 +535,10 @@ function wireEvents_post() {
     $('#btnLoadSummary').click(function () { getReactions(); });
     $('#btnLoadReactions').click(function () { getReactions(); });
     $('#btnLoadComments').click(function () { getComments(); });
-    $('#btnExportResultTable').click(function () { tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
+    $('#btnExportResultTable').click(function () { buildResultTable(); tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
     $('#btnExportResultAttachmentsZip').click(function () { startDownloadAttachments(); });
-    $('#btnShowResultTable').click(function () { $('#tblResultTable').removeClass('hidden'); });
-    $('#btnShowResultTableNewWindow').click(function () { writeToNewTable($('#tblResultTable')); });
+    $('#btnShowResultTable').click(function () { buildResultTable(); $('#tblResultTable').removeClass('hidden'); });
+    $('#btnShowResultTableNewWindow').click(function () { buildResultTable(); writeToNewTable($('#tblResultTable')); });
     $('#btnChangeOption').click(function () {
         $('#reportOption').removeClass('hidden'); $('#reportResult').addClass('hidden');
         ;
