@@ -21,6 +21,7 @@
     <script src="./lib/momentjs/moment.min.js"></script>
     <script src="./lib/jszip/jszip.min.js"></script>
     <script src="./lib/filesaver/FileSaver.min.js"></script>
+    <script src="./lib/sheetjs/xlsx.full.min.js"></script>
     <script src="./lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
 
     <meta property="fb:app_id" content="624861190962222" />
@@ -205,7 +206,9 @@
                     <br/>
                     <br/>
                     <div id="divResultButtons">
-                        <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only)</button>
+                        <button id="btnExportResultTable" class="btn btn-warning">Download as .xls (Chrome only, safe)</button>
+                        <br/>
+                        <button id="btnExportResultTableXlsx" class="btn btn-warning">Download as .xlsx (Chrome only, EXPERIMENTAL, fast)</button>
                         <br/>
                         <button id="btnExportResultAttachmentsZip" class="btn btn-warning" style='margin-top:5px'>Download Attachments as .zip (Chrome only)</button>
                         <br/>

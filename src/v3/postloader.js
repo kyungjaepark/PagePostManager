@@ -39,7 +39,7 @@ PostLoader.prototype.init = function (postId, locale, successCallback, failCallb
             _self.isWebsite = (response['type'] == 'website');
             var fieldList = 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type';
             if (_self.isWebsite)
-                fieldList = 'id,title,url,updated_time,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)';
+                fieldList = 'id,title,updated_time,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)';
 
             FB.api(
                 "/" + _self.postId,
@@ -56,7 +56,7 @@ PostLoader.prototype.init = function (postId, locale, successCallback, failCallb
 
 PostLoader.prototype.parseSummary = function (response, callback) {
     if (this.isWebsite)
-        this.permalink_url = response.url;
+        this.permalink_url = response.url || "#";
     else
         this.permalink_url = response.permalink_url;
 

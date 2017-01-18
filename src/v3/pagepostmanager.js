@@ -361,7 +361,7 @@ function generatePostInfoTr(responseData, isWebsite) {
         header = "(Website)";
     textTd.append($('<strong>').text(header));
     textTd.append($('<br/>'));
-    var url = responseData.permalink_url || responseData.url;
+    var url = responseData.permalink_url || responseData.url || "#";
     textTd.append($('<a>').text(url).attr('href', url));
     textTd.append($('<br/>'));
 
@@ -536,6 +536,7 @@ function wireEvents_post() {
     $('#btnLoadReactions').click(function () { getReactions(); });
     $('#btnLoadComments').click(function () { getComments(); });
     $('#btnExportResultTable').click(function () { buildResultTable(); tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
+    $('#btnExportResultTableXlsx').click(function () { generateXlsx('results_pagepostmanager.xls'); });
     $('#btnExportResultAttachmentsZip').click(function () { startDownloadAttachments(); });
     $('#btnShowResultTable').click(function () { buildResultTable(); $('#tblResultTable').removeClass('hidden'); });
     $('#btnShowResultTableNewWindow').click(function () { buildResultTable(); writeToNewTable($('#tblResultTable')); });
@@ -543,6 +544,12 @@ function wireEvents_post() {
         $('#reportOption').removeClass('hidden'); $('#reportResult').addClass('hidden');
         ;
     });
+}
+
+function generateXlsx(xlsxFilename)
+{
+    var xlsxObject = getResultTableXlsx(g_appContext.tableGenerationOption);
+    alert('todo:xlsxObject->xlsxFilename');
 }
 
 function startDownloadAttachments() {
