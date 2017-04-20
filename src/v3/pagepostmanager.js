@@ -649,7 +649,7 @@ function writeToNewTable(tblEntity) {
 var ga_event_page_only_once_sentEvents = [];
 function ga_event_page_only_once(eventName)
 {
-	if (ga_event_page_only_once_sentEvents.indexOf(eventName))
+	if (ga_event_page_only_once_sentEvents.indexOf(eventName) >= 0)
 		return;
 	ga_event_page_only_once_sentEvents.push(eventName);
 	ga('send', { hitType: 'pageview', page: '/pagepostmanager/~virtual/' + eventName });
