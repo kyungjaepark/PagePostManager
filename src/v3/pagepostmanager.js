@@ -28,6 +28,7 @@ function switchPage(pageName) {
 $().ready(function () { main(); });
 
 function main() {
+	ga_event_page_only_once('PageLoadComplete');
     $('body').css('display', '');
     wireEvents();
     wireEvents_post();
@@ -132,6 +133,7 @@ function onBtnBasicLoginClick() {
 }
 
 function onBasicLoginComplete() {
+	ga_event_page_only_once('FacebookLoginSuccess');
     g_appContext.initialized = true;
     applyFragmentValue();
 }
@@ -308,6 +310,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
 }
 
 function board_loadSuccess() {
+	ga_event_page_only_once('BoardSelected');
     switchPage('board');
     $('#board-name').text(String.format(SimpleTranslator.getKey('post_list_title_format'),
         g_appContext.boardInfo.name,
@@ -476,6 +479,7 @@ function trySetupPost(postId, successCallback, failCallback) {
 }
 
 function post_loadSuccess() {
+	ga_event_page_only_once('PostSelected');
     switchPage('post');
     $('#btn-goto-post-list').addClass('hidden');
     if (g_appContext.boardInfo.id != 0)
@@ -498,6 +502,7 @@ function getReactions() {
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
         ga('send', 'event', g_appContext.boardInfo.type, 'reactions', g_appContext.postLoader.postId, g_appContext.postLoader.reactionsLoader.resultArray.length);
+		ga_event_page_only_once('ExtractComplete');		
     });
 }
 
@@ -519,6 +524,7 @@ function getComments() {
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
         ga('send', 'event', g_appContext.boardInfo.type, 'comments', g_appContext.postLoader.postId, g_appContext.tableGenerationOption["commentsArray"].length);
+		ga_event_page_only_once('ExtractComplete');
     });
 }
 
@@ -637,4 +643,14 @@ function writeToNewTable(tblEntity) {
         .appendTo(new_body);
     $(w.document.head).html('<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>');
     $(w.document.body).html(new_body.html());
+}
+
+
+var ga_event_page_only_once_sentEvents = [];
+function ga_event_page_only_once(eventName)
+{
+	if (ga_event_page_only_once_sentEvents.indexOf(eventName))
+		return;
+	ga_event_page_only_once_sentEvents.push(eventName);
+	ga('send', { hitType: 'pageview', page: '/pagepostmanager/~virtual/' + eventName });
 }
