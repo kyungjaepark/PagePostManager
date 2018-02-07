@@ -7,6 +7,7 @@ var fbmanager = {
         name: '',
         uid: 0,
         accessToken: '',
+        accountInfoMap: {},
     },
     debug_log: function (log) {
         if (this.debug_mode)
@@ -19,7 +20,7 @@ var fbmanager = {
         $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
             FB.init({
                 appId: self.appId,
-                version: 'v2.6'
+                version: 'v2.12'
             });
             self.refreshPermission(initCallback);
         });
@@ -32,6 +33,7 @@ var fbmanager = {
         this.user.name = '';
         this.user.uid = 0;
         this.user.accessToken = '';
+        this.user.accountInfoMap = {};
         var self = this;
 
         FB.getLoginStatus(function (response) {
@@ -50,14 +52,24 @@ var fbmanager = {
                     FB.api('/me', function (response) {
                         if (typeof response.name !== 'undefined')
                             self.user.name = response.name;
-                        refreshPermissionCallback(response);
+                        self.refreshAccounts(refreshPermissionCallback, response);
                     });
                 });
             } else if (response.status === 'not_authorized') {
-                refreshPermissionCallback(response);
+                self.refreshAccounts(refreshPermissionCallback, response);
             } else {
-                refreshPermissionCallback(response);
+                self.refreshAccounts(refreshPermissionCallback, response);
             }
+        });
+    },
+    refreshAccounts: function (refreshPermissionCallback, permissionResponse) {
+        var self = this;
+        new FbApiListLoader().api('/me/accounts/', undefined, function (response) {
+            $.each(response.resultArray, function()
+            {
+                self.user.accountInfoMap[this.id] = this.access_token;
+            });
+            refreshPermissionCallback(permissionResponse);
         });
     },
     checkForLackingPermission: function (requiredPermissions) {

@@ -16,6 +16,7 @@ PostLoader.prototype.reset = function () {
     this.dialog = null;
     this.modal = null;
     this.locale = 'en_US';
+    this.pageToken = '';
 }
 
 PostLoader.prototype.stop = function () {
@@ -23,13 +24,13 @@ PostLoader.prototype.stop = function () {
     this.commentsLoader.stop();
 }
 
-PostLoader.prototype.init = function (postId, locale, successCallback, failCallback) {
+PostLoader.prototype.init = function (postId, locale, accountInfoMap, successCallback, failCallback) {
     this.postId = postId;
     this.locale = locale;
     var _self = this;
     FB.api(
         "/" + this.postId,
-        { 'fields': 'type' },
+        _self.wrapParam({ 'fields': 'type' }),
         function (response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
@@ -43,15 +44,26 @@ PostLoader.prototype.init = function (postId, locale, successCallback, failCallb
 
             FB.api(
                 "/" + _self.postId,
-                { 'fields': fieldList, locale: _self.locale },
+                _self.wrapParam({ 'fields': fieldList, locale: _self.locale }),
                 function (response) {
                     if (is_defined(response.error) && is_defined(failCallback)) {
                         failCallback(response);
                         return;
                     }
+                    if (is_defined(response.from) && is_defined(accountInfoMap[response.from.id]))
+                    {
+                        _self.pageToken = accountInfoMap[response.from.id];
+                    }
                     _self.parseSummary(response, successCallback);
                 });
         });
+}
+
+PostLoader.prototype.wrapParam = function(o) {
+    var o_c = JSON.parse(JSON.stringify(o));
+    if (this.pageToken != '')
+        o_c['access_token'] = this.pageToken;
+    return o_c;
 }
 
 PostLoader.prototype.parseSummary = function (response, callback) {
@@ -95,7 +107,7 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadReactions, loadCom
     //    this.modal.on('hidden.bs.modal', function (e) {
     if (_self.loadReactions && _self.reactionsLoader.status == 0) {
         _self.reactionsLoader.api("/" + _self.postId + "/reactions"
-            , { limit: '200', fields: 'id,name,type', locale: _self.locale }
+            , _self.wrapParam({ limit: '200', fields: 'id,name,type', locale: _self.locale })
             , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
             , function (fbApiListLoader) { $('#prgLoadReactionsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
         );
@@ -103,11 +115,11 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadReactions, loadCom
     if (_self.loadComments && _self.commentsLoader.status == 0) {
         _self.commentsLoader.api(
             "/" + _self.postId + "/comments"
-            , {
+            , _self.wrapParam({
                 filter: 'stream', limit: '200',
                 locale: _self.locale,
                 fields: 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c'
-            }
+            })
             , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
             , function (fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
         );

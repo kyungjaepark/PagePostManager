@@ -465,7 +465,7 @@ function trySetupPost(postId, successCallback, failCallback) {
     $('#reportOption').removeClass('hidden');
     $('#reportResult').addClass('hidden');
 
-    g_appContext.postLoader.init(postId, $('#graph-api-locale').val(), function (response) {
+    g_appContext.postLoader.init(postId, $('#graph-api-locale').val(), fbmanager.user.accountInfoMap, function (response) {
         $('#tblShortSummary').find('tr').remove();
         $('#tblResultTable').find('tr').remove();
 
@@ -486,6 +486,10 @@ function post_loadSuccess() {
         $('#btn-goto-post-list').removeClass('hidden');
     $('#divResultButtons').hide();
     $('#alertResultsPlaceholder').show();
+
+    $('#lblTokenNotice').addClass('hidden');
+    if (g_appContext.postLoader.pageToken == '')
+        $('#lblTokenNotice').removeClass('hidden');
 }
 
 function getReactions() {
