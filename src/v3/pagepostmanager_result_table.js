@@ -66,8 +66,12 @@ function getCommentsHtml(commentsArray, reactionsMap, isShowAttachment, isShowRe
         stringBuilder.push(tdReactions);
         stringBuilder.push(String.format("<td style='mso-number-format:\"\\@\"'>{0}</td>", commentsArray[i]["id"]));
         stringBuilder.push(tdCommentLink);
-        stringBuilder.push(String.format("<td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td>"
-            , commentsArray[i]["id"], commentsArray[i]["name"]));
+        var fbUserIdLink = 'http://facebook.com/' + commentsArray[i]["id"];
+        // FB 정책 변경으로 인해, 이름 링크도 댓글 링크로 대체
+        // https://developers.facebook.com/blog/post/2018/04/19/facebook-login-changes-address-abuse/
+        fbUserIdLink = commentsArray[i]["link"];
+        stringBuilder.push(String.format("<td><a href='{0}' target='_blank'>{1}</a></td>"
+            , fbUserIdLink, commentsArray[i]["name"]));
         stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["time"]));
         stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["htmlMessage"]));
         stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["commentLikes"]));
@@ -149,8 +153,12 @@ function getCommentsXlsx(commentsArray, reactionsMap, isShowAttachment, isShowRe
         stringBuilder.push(tdReactions);
         stringBuilder.push(String.format("<td style='mso-number-format:\"\\@\"'>{0}</td>", commentsArray[i]["id"]));
         stringBuilder.push(tdCommentLink);
-        stringBuilder.push(String.format("<td><a href='http://facebook.com/{0}' target='_blank'>{1}</a></td>"
-            , commentsArray[i]["id"], commentsArray[i]["name"]));
+        var fbUserIdLink = 'http://facebook.com/' + commentsArray[i]["id"];
+        // FB 정책 변경으로 인해, 이름 링크도 댓글 링크로 대체
+        // https://developers.facebook.com/blog/post/2018/04/19/facebook-login-changes-address-abuse/
+        fbUserIdLink = commentsArray[i]["link"];
+        stringBuilder.push(String.format("<td><a href='{0}' target='_blank'>{1}</a></td>"
+            , fbUserIdLink, commentsArray[i]["name"]));
         stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["time"]));
         stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["htmlMessage"]));
         stringBuilder.push(String.format("<td>{0}</td>", commentsArray[i]["commentLikes"]));

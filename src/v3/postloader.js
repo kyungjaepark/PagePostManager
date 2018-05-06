@@ -50,8 +50,7 @@ PostLoader.prototype.init = function (postId, locale, accountInfoMap, successCal
                         failCallback(response);
                         return;
                     }
-                    if (is_defined(response.from) && is_defined(accountInfoMap[response.from.id]))
-                    {
+                    if (is_defined(response.from) && is_defined(accountInfoMap[response.from.id])) {
                         _self.pageToken = accountInfoMap[response.from.id];
                     }
                     _self.parseSummary(response, successCallback);
@@ -59,7 +58,7 @@ PostLoader.prototype.init = function (postId, locale, accountInfoMap, successCal
         });
 }
 
-PostLoader.prototype.wrapParam = function(o) {
+PostLoader.prototype.wrapParam = function (o) {
     var o_c = JSON.parse(JSON.stringify(o));
     if (this.pageToken != '')
         o_c['access_token'] = this.pageToken;
@@ -176,7 +175,7 @@ PostLoader.prototype.getTagMap = function () {
     return resultTable;
 }
 
-function decorateMessageWithTags(message, message_tags) {
+function decorateMessageWithTags(message, message_tags, comment_permalink) {
     var finalMessage = message + "";
     if (message_tags !== undefined) {
         var sortedMessageTags = message_tags.concat();
@@ -186,7 +185,11 @@ function decorateMessageWithTags(message, message_tags) {
         for (var i = 0; i < sortedMessageTags.length; i++) {
             var curOffset = sortedMessageTags[i]["offset"];
             var curLength = sortedMessageTags[i]["length"];
-            var resultHTML = "<a href='http://facebook.com/" + sortedMessageTags[i]["id"] + "' target='_blank'>"
+            var linkUrl = "http://facebook.com/" + sortedMessageTags[i]["id"];
+            // FB 정책 변경으로 인한 변경
+            // https://developers.facebook.com/blog/post/2018/04/19/facebook-login-changes-address-abuse/
+            linkUrl = comment_permalink;
+            var resultHTML = "<a href='" + linkUrl + "' target='_blank'>"
                 + UnicodeSubstring.substring(finalMessage, curOffset, curOffset + curLength) // sortedMessageTags[i]["name"]
                 + "</a>";
             finalMessage = UnicodeSubstring.substring(finalMessage, 0, curOffset)
@@ -241,8 +244,11 @@ PostLoader.prototype.getCommentsArray = function (isSkipUnknownUser) {
         }
         eachResult["time"] = moment(curResult["created_time"]).format('YYYY-MM-DD HH:mm:ss');
         eachResult["timeRaw"] = curResult["created_time"];
-        eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"]);
-        eachResult["link"] = curResult["permalink_url"]; //String.format("https://www.facebook.com/{0}", curResult["id"]);
+        eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"], curResult["permalink_url"]);
+        eachResult["link"] = String.format("https://www.facebook.com/{0}", curResult["id"]);
+        // FB 정책 변경으로 인한 변경
+        // https://developers.facebook.com/blog/post/2018/04/19/facebook-login-changes-address-abuse/
+        eachResult["link"] = curResult["permalink_url"];
         eachResult["commentLikes"] = curResult["like_count"];
         eachResult["attachmentUrl"] = parseAttachmentUrl(curResult["attachment"])["url"];
         eachResult["attachmentImage"] = parseAttachmentUrl(curResult["attachment"])["image"];

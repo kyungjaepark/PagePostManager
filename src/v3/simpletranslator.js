@@ -46,15 +46,22 @@ SimpleTranslator = {
             $("#lblSkipUnknownUser").text("사용자 정보를 확인할 수 없는 댓글 제외");
             $("#lblShowTopInfo").text("댓글 추출 결과 테이블 상단에 추가 정보 표시");
             $("#lblTokenNotice").html("2018.2.5 이후 페이스북 정책 변경으로 인한 중요 공지<br/>좋아요/댓글 추출을 위해서는, 해당 페이지에 대해 <b>'분석자'</b> 이상의 역할이 있어야 합니다.");
-            $("#lblSbNoteReaction").text("노트 #1 : 이제 '좋아요(Like)' 대신, 좋아요를 포함한 전체 '반응(Reaction)' 이 표시됩니다. 다음 설명을 참조하세요 : ");
-            $("#lblSbNoteReactionLink").text("[링크]");
-            $("#lblSbNoteId").text("노트 #2 : 결과에 표시되는 유저 ID는, 실제 유저 ID가 아닌 App-scoped ID입니다. 다음 설명을 참조하세요 : ");
-            $("#lblSbNoteLink").text("[링크]");
-            $("#btnExportResultTable").text("결과를 엑셀 .xls 파일로 받기 (크롬 전용, 안정적)");
+            $("#lblBreakingChanges20180419").html(
+                "<strong>중요 변경 사항</strong><br/>"
+                + "2018년 4월 19일부터, 좋아요/댓글을 남긴 유저 페이지로 가는 링크가 차단되었습니다."
+                + "<br/> 유저 페이지를 방문하기 위해서는, 결과 표에 표시되는 '<stron><u>댓글 링크 (Comment Link)</u></strong>' 를 눌러 해당 댓글을 표시한 후 방문이 가능합니다."
+                + "<br/> 이로 인해 기존에 유저 이름에 걸려 있던 링크는 모두 '댓글 링크' 로 대체되었습니다."
+                + "<br/> Facebook 정책이 바뀔 때까지 이 방식은 계속 유지됩니다."
+                + "<br/> 참고 링크 :"
+            );
+
+            $("#lblResultDownload").text("다운로드 (구글 Chrome 전용)");
+            $("#btnExportResultTable").text("결과 표 (.xls)");
             $("#btnExportResultTableXlsx").text("결과를 엑셀 .xlsx 파일로 받기 (크롬 전용, 실험적 기능, 빠름)");
-            $("#btnExportResultAttachmentsZip").text("첨부 파일을 .zip 파일로 받기 (크롬 전용)");
-            $("#btnShowResultTable").text("결과를 화면에 표시");
-            $("#btnShowResultTableNewWindow").text("새 창에 결과 테이블 표시");
+            $("#btnExportResultAttachmentsZip").text("결과 표 + 첨부 이미지(.zip)");
+            $("#lblResultShow").text("결과 직접 표시");
+            $("#btnShowResultTable").text("현재 창에 표시");
+            $("#btnShowResultTableNewWindow").text("새 창에 표시");
 
             $("#lblReportOption").text("보고서 옵션");
             $("#lblReportResult").text("보고서 결과");
