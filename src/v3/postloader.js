@@ -118,7 +118,7 @@ PostLoader.prototype.launchLoaderModal = function (modal, loadReactions, loadCom
             , _self.wrapParam({
                 filter: 'stream', limit: '200',
                 locale: _self.locale,
-                fields: 'id,from,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c'
+                fields: 'id,from,permalink_url,created_time,message,message_tags,attachment,parent,like_count', 'date_format': 'c'
             })
             , function (fbApiListLoader) { _self.onLoaderTaskComplete(); }
             , function (fbApiListLoader) { $('#prgLoadCommentsInfo')._k_progressBarValue(fbApiListLoader.resultArray.length); }
@@ -242,7 +242,7 @@ PostLoader.prototype.getCommentsArray = function (isSkipUnknownUser) {
         eachResult["time"] = moment(curResult["created_time"]).format('YYYY-MM-DD HH:mm:ss');
         eachResult["timeRaw"] = curResult["created_time"];
         eachResult["htmlMessage"] = decorateMessageWithTags(curResult["message"], curResult["message_tags"]);
-        eachResult["link"] = String.format("https://www.facebook.com/{0}", curResult["id"]);
+        eachResult["link"] = curResult["permalink_url"]; //String.format("https://www.facebook.com/{0}", curResult["id"]);
         eachResult["commentLikes"] = curResult["like_count"];
         eachResult["attachmentUrl"] = parseAttachmentUrl(curResult["attachment"])["url"];
         eachResult["attachmentImage"] = parseAttachmentUrl(curResult["attachment"])["image"];
