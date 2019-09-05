@@ -155,7 +155,7 @@ function onBtnSearchMyPagesClick() {
     function onSuccess() {
         searchPage_startRequest('/me/accounts', {}, 'page');
     }
-    var extraPermissions = ['pages_show_list'];
+    var extraPermissions = ['pages_show_list','manage_pages'];
     var lackingPermission = fbmanager.checkForLackingPermission(extraPermissions);
     if (lackingPermission.length == 0) {
         onSuccess();
