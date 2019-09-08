@@ -30,14 +30,19 @@ PostLoader.prototype.init = function (postId, locale, accountInfoMap, successCal
     var _self = this;
     FB.api(
         "/" + this.postId,
-        _self.wrapParam({ 'fields': 'type' }),
+        _self.wrapParam({ 'fields': 'attachments' }),
         function (response) {
             if (is_defined(response.error) && is_defined(failCallback)) {
                 failCallback(response);
                 return;
             }
 
-            _self.isWebsite = (response['type'] == 'website');
+            _self.isWebsite = false;
+            try {
+                if (response["attachments"]["data"][0]["type"] == "website")
+                    _self.isWebsite = true;
+            } catch{ }
+
             var fieldList = 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type';
             if (_self.isWebsite)
                 fieldList = 'id,title,updated_time,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1)';

@@ -3,7 +3,7 @@ var g_appConfig =
     basicPermissions: ['public_profile'],
     appId: '624861190962222',
     testAppId: '399334770769428',
-    fbAppVersion: 'v2.12',
+    fbAppVersion: 'v4.0',
     testFbAppVersion: 'v4.0',
 }
 
