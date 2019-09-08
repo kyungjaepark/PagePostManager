@@ -1,24 +1,25 @@
 var g_appConfig =
-    {
-        basicPermissions: ['public_profile'],
-        appId: '624861190962222'
-    }
+{
+    basicPermissions: ['public_profile'],
+    appId: '624861190962222',
+    testAppId: '399334770769428'
+}
 
 var g_appContext =
+{
+    initialized: false,
+    searchType: 'page',
+    boardInfo:
     {
-        initialized: false,
-        searchType: 'page',
-        boardInfo:
-        {
-            id: 0,
-            type: 'page',
-            name: '',
-        },
-        postLoader: null,
-        postDownloaderModal: null,
-        currentFragment: undefined, // aka 'hash'
-        tableGenerationOption: {},
-    }
+        id: 0,
+        type: 'page',
+        name: '',
+    },
+    postLoader: null,
+    postDownloaderModal: null,
+    currentFragment: undefined, // aka 'hash'
+    tableGenerationOption: {},
+}
 
 function switchPage(pageName) {
     $('.app-pages').addClass('hidden');
@@ -28,7 +29,7 @@ function switchPage(pageName) {
 $().ready(function () { main(); });
 
 function main() {
-	ga_event_page_only_once('PageLoadComplete');
+    ga_event_page_only_once('PageLoadComplete');
     $('body').css('display', '');
     wireEvents();
     wireEvents_post();
@@ -37,7 +38,15 @@ function main() {
     SimpleTranslator.init(getParamMap()['lang'])
     SimpleTranslator.translate();
     initGraphApiLocale();
-    fbmanager.jQueryInit(g_appConfig.appId, onFbInitialized);
+    var fbAppId = g_appConfig.appId;
+    if (getParamMap()['test'] == true) {
+        fbAppId = g_appConfig.testAppId;
+        $('#headerArea')
+            .removeClass('alert-info')
+            .addClass('alert-warning');
+        lblTestMode.removeClass('hidden');
+    }
+    fbmanager.jQueryInit(fbAppId, onFbInitialized);
 }
 
 function wireEvents() {
@@ -133,7 +142,7 @@ function onBtnBasicLoginClick() {
 }
 
 function onBasicLoginComplete() {
-	ga_event_page_only_once('FacebookLoginSuccess');
+    ga_event_page_only_once('FacebookLoginSuccess');
     g_appContext.initialized = true;
     applyFragmentValue();
 }
@@ -155,7 +164,7 @@ function onBtnSearchMyPagesClick() {
     function onSuccess() {
         searchPage_startRequest('/me/accounts', {}, 'page');
     }
-    var extraPermissions = ['pages_show_list','manage_pages'];
+    var extraPermissions = ['pages_show_list', 'manage_pages'];
     var lackingPermission = fbmanager.checkForLackingPermission(extraPermissions);
     if (lackingPermission.length == 0) {
         onSuccess();
@@ -310,7 +319,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
 }
 
 function board_loadSuccess() {
-	ga_event_page_only_once('BoardSelected');
+    ga_event_page_only_once('BoardSelected');
     switchPage('board');
     $('#board-name').text(String.format(SimpleTranslator.getKey('post_list_title_format'),
         g_appContext.boardInfo.name,
@@ -479,7 +488,7 @@ function trySetupPost(postId, successCallback, failCallback) {
 }
 
 function post_loadSuccess() {
-	ga_event_page_only_once('PostSelected');
+    ga_event_page_only_once('PostSelected');
     switchPage('post');
     $('#btn-goto-post-list').addClass('hidden');
     if (g_appContext.boardInfo.id != 0)
@@ -506,7 +515,7 @@ function getReactions() {
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
         ga('send', 'event', g_appContext.boardInfo.type, 'reactions', g_appContext.postLoader.postId, g_appContext.postLoader.reactionsLoader.resultArray.length);
-		ga_event_page_only_once('ExtractComplete');		
+        ga_event_page_only_once('ExtractComplete');
     });
 }
 
@@ -528,12 +537,11 @@ function getComments() {
         $('#divResultButtons').show();
         $('#alertResultsPlaceholder').hide();
         ga('send', 'event', g_appContext.boardInfo.type, 'comments', g_appContext.postLoader.postId, g_appContext.tableGenerationOption["commentsArray"].length);
-		ga_event_page_only_once('ExtractComplete');
+        ga_event_page_only_once('ExtractComplete');
     });
 }
 
-function buildResultTable()
-{
+function buildResultTable() {
     $('#tblResultTable').find('tr').remove();
     tblResultTable.innerHTML = getResultTableHtml(g_appContext.tableGenerationOption);
     sorttable.makeSortable(tblResultTable);
@@ -556,8 +564,7 @@ function wireEvents_post() {
     });
 }
 
-function generateXlsx(xlsxFilename)
-{
+function generateXlsx(xlsxFilename) {
     var xlsxObject = getResultTableXlsx(g_appContext.tableGenerationOption);
     alert('todo:xlsxObject->xlsxFilename');
 }
@@ -651,11 +658,10 @@ function writeToNewTable(tblEntity) {
 
 
 var ga_event_page_only_once_sentEvents = [];
-function ga_event_page_only_once(eventName)
-{
-	if (ga_event_page_only_once_sentEvents.indexOf(eventName) >= 0)
-		return;
-	ga_event_page_only_once_sentEvents.push(eventName);
-	ga('set', 'page', '/pagepostmanager/__virtual/' + eventName + '.html');
-	ga('send', 'pageview');
+function ga_event_page_only_once(eventName) {
+    if (ga_event_page_only_once_sentEvents.indexOf(eventName) >= 0)
+        return;
+    ga_event_page_only_once_sentEvents.push(eventName);
+    ga('set', 'page', '/pagepostmanager/__virtual/' + eventName + '.html');
+    ga('send', 'pageview');
 }

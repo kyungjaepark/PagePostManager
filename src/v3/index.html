@@ -31,15 +31,18 @@
     />
 
     <body style='display:none'>
-        <div class="alert alert-info text-center" role="alert">
+        <div id='headerArea' class="alert alert-info text-center" role="alert">
             <strong>
-                <span id="lblSbBigTitle">PagePostManager v3 :: Page/Group Post Manager for Facebook</small>
+                <span id="lblSbBigTitle">PagePostManager v3 :: Page Post Manager for Facebook</small>
                 </span>
             </strong>
             <p id='lblSbWelcome'>Tired of clicking 'Load More Comments' from your post to get all comments?
                 <br/> Get complete list of comments and reactions in a single click, in a minute.</p>
             <span id='sb-locale'>Language settings for Extracting : </span>
             <select id='graph-api-locale'></select>
+            <p id='lblTestMode' class='hidden'>
+                <B>APP TEST MODE</B>
+            </p>
         </div>
         <div id='app-outline' class='text-center'>
 
@@ -70,9 +73,9 @@
                 <table class='table table-bordered' style='margin:auto; max-width:600px'>
                     <tr>
                         <td>
-                            <span id='sb-show-admin'>Show pages/groups I am admin of</span>
+                            <span id='sb-show-admin'>Show pages I am admin of</span>
                         </td>
-                        <td>
+                        <td class='hidden'>
                             <span id='sb-search-by-name'>Search Page/Group by Name</span>
                         </td>
                     </tr>
@@ -81,10 +84,10 @@
                             <i id="sb-extra-permission">Note : Requires extra permission</i>
                             <br/>
                             <button id="btn-search-my-pages" class="btn btn-success">Show my pages</button>
-                            <button id="btn-search-my-groups" class="btn btn-success">Show my groups</button>
+                            <button id="btn-search-my-groups" class="hidden btn btn-success">Show my groups</button>
                             <br/>
                         </td>
-                        <td style='vertical-align:middle'>
+                        <td style='vertical-align:middle' class='hidden'>
                             <input id="txt-search" style='margin-bottom:5px'>
                             <br/>
                             <button id="btn-search-page" class="btn btn-success btn-sm">Search Page</button>
@@ -92,7 +95,7 @@
                             <br/>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class='hidden'>
                         <td style='vertical-align:middle' colspan='2'>
                             <span id='sb-extract-from-comment-plugin'>Get Comments from Facebook Comment Plugin</span>
                             <br/>
