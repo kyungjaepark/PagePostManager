@@ -306,7 +306,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
     FB.api('/' + boardId,
         {
             metadata: 1,
-            fields: "id,metadata{type},name",
+            fields: "access_token,id,metadata{type},name",
             locale: $('#graph-api-locale').val(),
         },
         function (response) {
@@ -317,6 +317,7 @@ function trySetupBoard(boardId, successCallback, failCallback) {
             g_appContext.boardInfo.id = response.id;
             g_appContext.boardInfo.type = response.metadata.type;
             g_appContext.boardInfo.name = response.name;
+            fbmanager.user.accountInfoMap[response.id] = response.access_token;
             ga('send', 'event', g_appContext.boardInfo.type, 'list', g_appContext.boardInfo.name);
             successCallback(response);
         }
