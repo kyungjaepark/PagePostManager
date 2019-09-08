@@ -39,12 +39,12 @@ function main() {
     SimpleTranslator.translate();
     initGraphApiLocale();
     var fbAppId = g_appConfig.appId;
-    if (getParamMap()['test'] == true) {
+    if (getParamMap()['test'] == 'true') {
         fbAppId = g_appConfig.testAppId;
         $('#headerArea')
             .removeClass('alert-info')
             .addClass('alert-warning');
-        lblTestMode.removeClass('hidden');
+        $('#lblTestMode').removeClass('hidden');
     }
     fbmanager.jQueryInit(fbAppId, onFbInitialized);
 }
