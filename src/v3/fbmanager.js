@@ -13,14 +13,14 @@ var fbmanager = {
         if (this.debug_mode)
             console.log(log);
     },
-    jQueryInit: function (appId, initCallback) {
+    jQueryInit: function (appId, fbAppVersion, initCallback) {
         this.debug_log("fbmanager::jQueryInit");
         this.appId = appId;
         var self = this;
         $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
             FB.init({
                 appId: self.appId,
-                version: 'v2.12'
+                version: fbAppVersion
             });
             self.refreshPermission(initCallback);
         });

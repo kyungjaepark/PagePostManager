@@ -2,7 +2,9 @@ var g_appConfig =
 {
     basicPermissions: ['public_profile'],
     appId: '624861190962222',
-    testAppId: '399334770769428'
+    testAppId: '399334770769428',
+    fbAppVersion: 'v2.12',
+    testFbAppVersion: 'v4.0',
 }
 
 var g_appContext =
@@ -39,14 +41,17 @@ function main() {
     SimpleTranslator.translate();
     initGraphApiLocale();
     var fbAppId = g_appConfig.appId;
+    var fbAppVersion = g_appConfig.fbAppVersion;
     if (getParamMap()['test'] == 'true') {
         fbAppId = g_appConfig.testAppId;
+        fbAppVersion = g_appConfig.testFbAppVersion;
         $('#headerArea')
             .removeClass('alert-info')
             .addClass('alert-warning');
         $('#lblTestMode').removeClass('hidden');
     }
-    fbmanager.jQueryInit(fbAppId, onFbInitialized);
+    
+    fbmanager.jQueryInit(fbAppId, fbAppVersion, onFbInitialized);
 }
 
 function wireEvents() {
