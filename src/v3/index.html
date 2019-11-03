@@ -82,6 +82,9 @@
         </div>
 
         <div id='page-search' class='app-pages'>
+            <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission
+                using this button</span><br /><button id='btn-reset'>RESET app permission</button>
+            <hr>
 
             <table class='table table-bordered' style='margin:auto; max-width:600px'>
                 <tr>
@@ -142,11 +145,8 @@
             </div>
 
             <div id='page-search-reset-hint' class="alert alert-warning">
-                <b>HOTFIX (2019-11-03)</b>
-                <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission
-                    using this button</span><br/><button id='btn-reset'>RESET app permission</button>
-                <hr>
-                <b>HOTFIX 2 : </b><span id="manual-search">If Hotfix 1 doesn't work, you can manually type your facebook page name(URL name) here to get post list.</span><br />
+                <span id="manual-search">If you're using this website with Facebook Business Account, your pages may be not showing properly.<br/>
+                    you can manually type your facebook page name(URL name) here to get post list.</span><br />
                 https://www.facebook.com/<input id="txt-manual-page-name" style='margin-bottom:5px'
                     placeholder='PagePostManager' />
                 <button id='btn-manual-search'>Manual Search</button>
