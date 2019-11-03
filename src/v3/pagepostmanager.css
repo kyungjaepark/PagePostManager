@@ -17,3 +17,26 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):after { 
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+input::-webkit-input-placeholder {
+    color: lightgray;
+ }
+ 
+ /* http://qnimate.com/all-about-html5-placeholder-attribute/ */
+ /* Firefox 18- */
+ input:-moz-placeholder 
+ {
+    color: lightgray;  
+ }
+ 
+ /* Firefox 19+ */
+ input::-moz-placeholder
+ {
+    color: lightgray;  
+ }
+ 
+ /* Internet Explorer */
+ input:-ms-input-placeholder 
+ {  
+    color: lightgray;  
+ }

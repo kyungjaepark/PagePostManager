@@ -61,6 +61,7 @@ function wireEvents() {
     $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
     $('#btn-reset').click(onBtnResetClick);
+    $('#btn-manual-search').click(onBtnManualSearchClick);
     $('#btn-board-search-again').click(onBtnBoardSearchAgainClick);
     $('#btn-goto-search').click(onBtnGotoSearchClick);
     $('#btn-goto-post-list').click(onBtnGotoPostListClick);
@@ -322,6 +323,21 @@ function onBtnResetClick() {
         document.location.reload();
     });
 }
+
+function onBtnManualSearchClick() {
+    FB.api('/', { 'id': 'https://www.facebook.com/' + $('#txt-manual-page-name').val()},
+        function (response) {
+            if (is_defined(response.id))
+            {
+                setCommandFragment("board:" + response.id);
+            }
+            else
+            {
+                alert('페이지 ID를 찾을 수 없었습니다. 다시 한 번 입력해주세요.\nex)PagePostManager');      
+            }
+        });
+}
+
 
 function searchPage_onPageSelection() {
     setCommandFragment("board:" + $(this).attr('id'));
