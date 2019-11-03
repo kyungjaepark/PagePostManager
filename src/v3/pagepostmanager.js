@@ -279,7 +279,14 @@ function searchPage_processResult(response) {
     if ($('#tbl-page-search-result tr:gt(0)').length > 0)
         $('#page-search-result').removeClass('hidden');
     else
+    {
         $('#page-search-result-empty').removeClass('hidden');
+        // 
+        FB.api('/me/permissions', function(response){
+            ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response));
+            }
+        ); 
+    }
     $('#page-search-reset-hint').removeClass('hidden');
 
     $('#btn-search-result-more').addClass('hidden');
