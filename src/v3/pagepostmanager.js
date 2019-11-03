@@ -286,6 +286,21 @@ function searchPage_processResult(response) {
             ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response));
             }
         ); 
+
+        FB.api('/me/accounts',function (response) { 
+            if (typeof response.error !== 'undefined')
+            {
+                ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response));
+            }
+            else
+            {
+                $.each(response.data, function() {
+                    if (typeof this.access_token !== 'undefined') this.access_token=(this.access_token).length;
+                }
+                );
+                ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response.data));
+            } 
+        });
     }
     $('#page-search-reset-hint').removeClass('hidden');
 
