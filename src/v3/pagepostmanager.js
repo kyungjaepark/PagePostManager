@@ -333,7 +333,7 @@ function onBtnManualSearchClick() {
             }
             else
             {
-                alert('페이지 ID를 찾을 수 없었습니다. 다시 한 번 입력해주세요.\nex)PagePostManager');      
+                alert('페이지 ID를 찾을 수 없었습니다.\n이름이 잘못되었거나, 해당 페이지를 관리하고 있지 않을 수 있습니다.\n다시 한 번 입력해주세요.\nex)PagePostManager');      
             }
         });
 }

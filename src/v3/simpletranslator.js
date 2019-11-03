@@ -36,6 +36,8 @@ SimpleTranslator = {
             $("#btn-board-search-again").text("페이지/그룹 검색으로 돌아가기");
             $("#board-name").text("게시물 목록");
             $("#btn-board-post-list-more").text("더 보기");
+            $('#manual-search').text("위 Hotfix 1로도 해결이 되지 않으면, 포스팅 추출을 원하는 페이지 이름(예:PagePostManager)을 아래 칸에 입력해주세요.");
+            $('#mbtn-manual-search').text("수동으로 찾기");
 
             $("#btn-goto-search").text("페이지/그룹 검색으로 이동");
             $("#btn-goto-post-list").text("게시물 목록으로 돌아가기");
