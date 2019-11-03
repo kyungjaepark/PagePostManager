@@ -278,28 +278,25 @@ function searchPage_processResult(response) {
 
     if ($('#tbl-page-search-result tr:gt(0)').length > 0)
         $('#page-search-result').removeClass('hidden');
-    else
-    {
+    else {
         $('#page-search-result-empty').removeClass('hidden');
         // 
-        FB.api('/me/permissions', function(response){
+        FB.api('/me/permissions', function (response) {
             ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response));
-            }
-        ); 
+        }
+        );
 
-        FB.api('/me/accounts',function (response) { 
-            if (typeof response.error !== 'undefined')
-            {
+        FB.api('/me/accounts', function (response) {
+            if (typeof response.error !== 'undefined') {
                 ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response));
             }
-            else
-            {
-                $.each(response.data, function() {
-                    if (typeof this.access_token !== 'undefined') this.access_token=(this.access_token).length;
+            else {
+                $.each(response.data, function () {
+                    if (typeof this.access_token !== 'undefined') this.access_token = (this.access_token).length;
                 }
                 );
                 ga('send', 'event', 'page-search-result-empty', 'api-error', JSON.stringify(response.data));
-            } 
+            }
         });
     }
     $('#page-search-reset-hint').removeClass('hidden');
@@ -320,10 +317,10 @@ function onBtnPageSearchResultMoreClick() {
 }
 
 function onBtnResetClick() {
-    FB.api('/me/permissions', 'delete', function(response){
+    FB.api('/me/permissions', 'delete', function (response) {
         alert('초기화를 진행했습니다. 페이지를 새로고침합니다.');
         document.location.reload();
-    }); 
+    });
 }
 
 function searchPage_onPageSelection() {
