@@ -270,37 +270,6 @@
                 </div>
             </div>
 
-            <div id='group-post-extractor' class='hidden' style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background-color:lightgray;'>
-                <h3>Group Post Extractor (Experimental)</h3>
-
-                <br/>
-                <div id='gpe-welcome'>
-                    <button id='gpe-start'>Start</button>
-                    <br/>
-                    <br/> Options
-                    <br/>
-                    <div id="datetimepickers" style='position:relative'>
-                        <input type="checkbox" id="gep-check-range">
-                        <span id="getp-check-range-label">기간 내 검색 : </span>
-                        <input type='text' id='gpe-datetimepicker-from' /> ~
-                        <input type='text' id='gpe-datetimepicker-to' />
-                    </div>
-                    <br/>
-                </div>
-                <div id='gpe-retrieve'>
-                    <span id='gpe-progress'>...</span>
-                    <br/>
-                    <button id='gpe-stop'>Stop</button>
-                </div>
-                <div id='gpe-extract' class='hidden'>
-                    <button id='gpe-excel'>Download .xls</button>
-                    <button id='gpe-new'>Show in New Window</button>
-                </div>
-                <table id="gpe-extracted-table" class="hidden table table-bordered table-hover"></table>
-                <hr/>
-                <button id='gpe-close'>Close Window</button>
-
-            </div>
             <div id="divFooter" class="container theme-showcase" role="main">
                 <div id="shareBox"></div>
                 <br/>
@@ -364,7 +333,6 @@
             <script src="fbapilistloader.js"></script>
             <script src="postloader.js"></script>
             <script src="pagepostmanager.js"></script>
-            <script src="pagepostmanager_gpe.js"></script>
             <script src="pagepostmanager_result_table.js"></script>
 
     </body>

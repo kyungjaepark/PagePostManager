@@ -35,7 +35,6 @@ function main() {
     $('body').css('display', '');
     wireEvents();
     wireEvents_post();
-    wireEvents_gpe();
     switchPage('loading');
     SimpleTranslator.init(getParamMap()['lang'])
     SimpleTranslator.translate();
