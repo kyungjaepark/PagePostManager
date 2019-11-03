@@ -50,7 +50,7 @@ function main() {
             .addClass('alert-warning');
         $('#lblTestMode').removeClass('hidden');
     }
-    
+
     fbmanager.jQueryInit(fbAppId, fbAppVersion, onFbInitialized);
 }
 
@@ -128,12 +128,15 @@ function onFbInitialized() {
 }
 
 function processBasicLogin() {
+    $('#lblFbLoginProgress').text('Login Step 3 of 4 finished.');
     var lackingPermission = fbmanager.checkForLackingPermission(g_appConfig.basicPermissions);
+    $('#lblFbLoginProgress').text('Login Step 4 of 4 finished.');
     if (lackingPermission.length == 0) {
         $('#basic-login-box').addClass('hidden');
         onBasicLoginComplete();
     }
     else {
+        $('#lblFbLoginProgress').text('Login Step 1 of 4 finished.');
         $('#basic-login-box').removeClass('hidden');
         $('#btn-basic-login').prop('disabled', false);
     }
@@ -141,9 +144,12 @@ function processBasicLogin() {
 
 function onBtnBasicLoginClick() {
     $('#btn-basic-login').prop('disabled', true);
-    FB.login(function (response) {
-        fbmanager.refreshPermission(processBasicLogin);
-    }, { scope: g_appConfig.basicPermissions, return_scopes: true });
+    FB.login(onFbLoginFinish, { scope: g_appConfig.basicPermissions, return_scopes: true });
+}
+
+function onFbLoginFinish(response) {
+    $('#lblFbLoginProgress').text('Login Step 2 of 4 finished.');
+    fbmanager.refreshPermission(processBasicLogin);
 }
 
 function onBasicLoginComplete() {

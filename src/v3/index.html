@@ -64,9 +64,15 @@
                     <span id='login-required'>To continue, Facebook authorization is required.</span>
                     <br/>
                     <br/>
-                    <div class="fb-login-button" data-width="" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false"></div>
-                    <button id='btn-basic-login' class='btn btn-primary'>Login to Facebook</button>
+                    <div class="fb-login-button" data-width="" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false" data-onlogin="onFbLoginFinish();"></div>
+                    <button id='btn-basic-login' class='btn btn-primary hidden'>Login to Facebook</button>
                     <br/>
+                    <br/>
+                    <p id='lblFbLoginProgress'>
+                        Login Step 1 of 4 finished.
+                    </p>
+                    <br/>
+        
                 </div>
             </div>
 
