@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>kyungjaepark.com :: Page Post Manager</title>
+    
+    <link rel="shortcut icon" href="./res/fb-pages.png">
 
     <link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="./lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
@@ -77,6 +79,7 @@
             </div>
 
             <div id='page-search' class='app-pages'>
+
                 <table class='table table-bordered' style='margin:auto; max-width:600px'>
                     <tr>
                         <td>
@@ -129,12 +132,16 @@
                     </table>
                     <br/>
                     <input type="button" class="btn btn-default btn-sm" id="btn-search-result-more" value="More" />
-                    <br/>
-                    <br/>
                 </div>
                 <div id="page-search-result-empty" class='hidden'>
                     <span id="sb-search-page-empty">No results found. Please try searching with different keywords.</span>
                 </div>
+
+                <div id='page-search-reset-hint' class="alert alert-warning">
+                        <b>HOTFIX (2019-11-03)</b><br/>
+                        <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission using this button</span><br/><button id='btn-reset'>RESET app permission</button>
+                    </div>
+    
             </div>
 
             <div id='page-board' class='app-pages'>

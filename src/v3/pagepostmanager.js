@@ -60,6 +60,7 @@ function wireEvents() {
     $('#btn-search-page').click(onBtnSearchPageClick);
     $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
+    $('#btn-reset').click(onBtnResetClick);
     $('#btn-board-search-again').click(onBtnBoardSearchAgainClick);
     $('#btn-goto-search').click(onBtnGotoSearchClick);
     $('#btn-goto-post-list').click(onBtnGotoPostListClick);
@@ -168,6 +169,7 @@ function searchPage_clear() {
     $('#txt-search').val('');
     $('#page-search-result').addClass('hidden');
     $('#page-search-result-empty').addClass('hidden');
+    $('#page-search-reset-hint').addClass('hidden');
 }
 
 function onBtnSearchMyPagesClick() {
@@ -228,6 +230,7 @@ function searchPage_startRequest(apiPrefix, param, searchType) {
     $('#tbl-page-search-result tr:gt(0)').remove();
     $('#page-search-result').addClass('hidden');
     $('#page-search-result-empty').addClass('hidden');
+    $('#page-search-reset-hint').addClass('hidden');
     FB.api(apiPrefix, param, function (response) { searchPage_processResult(response); });
 }
 
@@ -277,6 +280,7 @@ function searchPage_processResult(response) {
         $('#page-search-result').removeClass('hidden');
     else
         $('#page-search-result-empty').removeClass('hidden');
+    $('#page-search-reset-hint').removeClass('hidden');
 
     $('#btn-search-result-more').addClass('hidden');
     $('#btn-search-result-more').prop('disabled', true);
@@ -291,6 +295,13 @@ function searchPage_processResult(response) {
 function onBtnPageSearchResultMoreClick() {
     $(this).prop('disabled', true);
     FB.api($(this).attr('api'), function (response) { searchPage_processResult(response); });
+}
+
+function onBtnResetClick() {
+    FB.api('/me/permissions', 'delete', function(response){
+        alert('초기화를 진행했습니다. 페이지를 새로고침합니다.');
+        document.location.reload();
+    }); 
 }
 
 function searchPage_onPageSelection() {

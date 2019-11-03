@@ -30,6 +30,8 @@ SimpleTranslator = {
             $("#btn-search-group").text("그룹 찾기");
             $("#btn-search-result-more").text("더 보기");
             $("#sb-search-page-empty").text("검색 결과가 없습니다. 다른 검색어를 입력해 보세요.");
+            $("#hotfix-reload").text("만약 페이지 목록을 얻는 데 계속 문제가 있다면, 이 버튼을 눌러 앱 설정 초기화를 진행해주세요.");
+            $("#btn-reset").text("앱 설정 초기화");
 
             $("#btn-board-search-again").text("페이지/그룹 검색으로 돌아가기");
             $("#btn-group-post-extract-show").text("페이지/그룹 게시물 추출하기(실험 기능)");
