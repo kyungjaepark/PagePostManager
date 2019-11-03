@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>kyungjaepark.com :: Page Post Manager</title>
-    
+
     <link rel="shortcut icon" href="./res/fb-pages.png">
 
     <link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -29,324 +29,335 @@
     <meta property="fb:app_id" content="624861190962222" />
     <meta property="og:image" content="http://kyungjaepark.com/pagepostmanager/pagepostmanager.png" />
     <meta property="og:title" content="Page Post Manager / 페이지 게시물 매니저" />
-    <meta property="og:description" content="Get reactions and comments of post in a single click! / 게시물의 좋아요와 댓글 목록을 클릭 한번에!"
-    />
+    <meta property="og:description"
+        content="Get reactions and comments of post in a single click! / 게시물의 좋아요와 댓글 목록을 클릭 한번에!" />
 
-    <body style='display:none'>
-        <div id='headerArea' class="alert alert-info text-center" role="alert">
-            <strong>
-                <span id="lblSbBigTitle">PagePostManager v3 :: Page Post Manager for Facebook</small>
-                </span>
-            </strong>
-            <p id='lblSbWelcome'>Tired of clicking 'Load More Comments' from your post to get all comments?
-                <br/> Get complete list of comments and reactions in a single click, in a minute.</p>
-            <span id='sb-locale'>Language settings for Extracting : </span>
-            <select id='graph-api-locale'></select>
-            <p id='lblTestMode' class='hidden'>
-                <B>APP TEST MODE</B>
-            </p>
+<body style='display:none'>
+    <div id='headerArea' class="alert alert-info text-center" role="alert">
+        <strong>
+            <span id="lblSbBigTitle">PagePostManager v3 :: Page Post Manager for Facebook</small>
+            </span>
+        </strong>
+        <p id='lblSbWelcome'>Tired of clicking 'Load More Comments' from your post to get all comments?
+            <br /> Get complete list of comments and reactions in a single click, in a minute.</p>
+        <span id='sb-locale'>Language settings for Extracting : </span>
+        <select id='graph-api-locale'></select>
+        <p id='lblTestMode' class='hidden'>
+            <B>APP TEST MODE</B>
+        </p>
+    </div>
+    <div id='app-outline' class='text-center'>
+
+        <div id='page-loading' class='app-pages'>
+            <span id='sb-connecting-to-facebook'>Connecting to Faceboook...</span>
+            <br />
+            <span id='sb-connecting-to-facebook-2'>(If this page is displayed longer than 10 seconds, try refreshing the
+                page.)</span>
         </div>
-        <div id='app-outline' class='text-center'>
 
-            <div id='page-loading' class='app-pages'>
-                <span id='sb-connecting-to-facebook'>Connecting to Faceboook...</span>
-                <br/>
-                <span id='sb-connecting-to-facebook-2'>(If this page is displayed longer than 10 seconds, try refreshing the page.)</span>
+        <div id='page-welcome' class='app-pages'>
+            <h2 id='sb-welcome'>Welcome!</h2>
+            <br />
+            <span id='sb-intro'>With Page/Group Post Manager for Facebook, You can easily get comments and reactions
+                from your pages/groups'
+                posting.
+            </span>
+            <br />
+
+            <div id='basic-login-box'>
+                <span id='login-required'>To continue, Facebook authorization is required.</span>
+                <br />
+                <br />
+                <div class="fb-login-button" data-width="" data-size="large" data-button-type="login_with"
+                    data-auto-logout-link="false" data-use-continue-as="false" data-onlogin="onFbLoginFinish();"></div>
+                <button id='btn-basic-login' class='btn btn-primary hidden'>Login to Facebook</button>
+                <br />
+                <br />
+                <p id='lblFbLoginProgress'>
+                    Login Step 1 of 4 finished.
+                </p>
+                <br />
+
+            </div>
+        </div>
+
+        <div id='page-search' class='app-pages'>
+
+            <table class='table table-bordered' style='margin:auto; max-width:600px'>
+                <tr>
+                    <td>
+                        <span id='sb-show-admin'>Show pages I am admin of</span>
+                    </td>
+                    <td class='hidden'>
+                        <span id='sb-search-by-name'>Search Page/Group by Name</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='vertical-align:middle'>
+                        <i id="sb-extra-permission">Note : Requires extra permission</i>
+                        <br />
+                        <button id="btn-search-my-pages" class="btn btn-success">Show my pages</button>
+                        <button id="btn-search-my-groups" class="hidden btn btn-success">Show my groups</button>
+                        <br />
+                    </td>
+                    <td style='vertical-align:middle' class='hidden'>
+                        <input id="txt-search" style='margin-bottom:5px'>
+                        <br />
+                        <button id="btn-search-page" class="btn btn-success btn-sm">Search Page</button>
+                        <button id="btn-search-group" class="btn btn-success btn-sm">Search Group</button>
+                        <br />
+                    </td>
+                </tr>
+                <tr class='hidden'>
+                    <td style='vertical-align:middle' colspan='2'>
+                        <span id='sb-extract-from-comment-plugin'>Get Comments from Facebook Comment Plugin</span>
+                        <br />
+                        <span id='sb-comment-plugin-data-href'>data-href (target url)</span>
+                        :
+                        <input id="txt-comment-plugin-data" style='margin-bottom:5px; width:400px'>
+                        <br />
+                        <button id="btn-parse-comment-plugin" class="btn btn-success btn-sm">Get Data</button>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+            <br />
+
+            <div id="page-search-result" class='hidden'>
+                <table id="tbl-page-search-result" class="table table-bordered table-hover table-striped"
+                    style='margin:auto; max-width:600px'>
+                    <thead>
+                        <tr>
+                            <td>Image</td>
+                            <td>Info</td>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <br />
+                <input type="button" class="btn btn-default btn-sm" id="btn-search-result-more" value="More" />
+            </div>
+            <div id="page-search-result-empty" class='hidden'>
+                <span id="sb-search-page-empty">No results found. Please try searching with different keywords.</span>
             </div>
 
-            <div id='page-welcome' class='app-pages'>
-                <h2 id='sb-welcome'>Welcome!</h2>
-                <br/>
-                <span id='sb-intro'>With Page/Group Post Manager for Facebook, You can easily get comments and reactions from your pages/groups'
-                    posting.
-                </span>
-                <br/>
-
-                <div id='basic-login-box'>
-                    <span id='login-required'>To continue, Facebook authorization is required.</span>
-                    <br/>
-                    <br/>
-                    <div class="fb-login-button" data-width="" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false" data-onlogin="onFbLoginFinish();"></div>
-                    <button id='btn-basic-login' class='btn btn-primary hidden'>Login to Facebook</button>
-                    <br/>
-                    <br/>
-                    <p id='lblFbLoginProgress'>
-                        Login Step 1 of 4 finished.
-                    </p>
-                    <br/>
-        
-                </div>
+            <div id='page-search-reset-hint' class="alert alert-warning">
+                <b>HOTFIX (2019-11-03)</b><br />
+                <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission
+                    using this button</span><br /><button id='btn-reset'>RESET app permission</button>
+                <hr>
+                <br /><span id="manual-search">Manual mode : type your facebook page URL name here</span><br />
+                https://www.facebook.com/<input id="txt-manual-page-name" style='margin-bottom:5px'
+                    placeholder='PagePostManager' />
+                <button id='btn-manual-search'>Manual Search</button>
             </div>
 
-            <div id='page-search' class='app-pages'>
+        </div>
 
-                <table class='table table-bordered' style='margin:auto; max-width:600px'>
+        <div id='page-board' class='app-pages'>
+            <button class="btn btn-default btn-sm" id='btn-board-search-again'>Back to page/group search</button>
+            <br />
+            <br />
+            <span id='board-name'>Post list</span>
+            <br />
+            <br />
+            <div id="board-post-list" class='hidden'>
+                <table id="tbl-board-post-list" class="table table-bordered table-hover table-striped"
+                    style='margin:auto; max-width:600px'>
+                    <thead>
+                        <tr>
+                            <td>Image</td>
+                            <td>Info</td>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <br />
+                <input type="button" class="btn btn-default btn-sm" id="btn-board-post-list-more" value="More" />
+                <br />
+                <br />
+            </div>
+        </div>
+
+        <div id='page-post' class='app-pages'>
+            <button class="btn btn-default btn-sm" id='btn-goto-search'>Go to page/group search</button>
+            <button class="btn btn-default btn-sm" id='btn-goto-post-list'>Go to post list</button>
+            <br />
+            <br />
+
+            <table id="tblShortSummary" class="table table-bordered table-hover text-left"
+                style='margin:auto; max-width:600px'></table>
+            <br />
+            <div id='reportOption'>
+                <h3 id='lblReportOption'>Report Option</h3>
+                <table style='margin:auto; max-width:600px' class='text-left'>
                     <tr>
                         <td>
-                            <span id='sb-show-admin'>Show pages I am admin of</span>
-                        </td>
-                        <td class='hidden'>
-                            <span id='sb-search-by-name'>Search Page/Group by Name</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style='vertical-align:middle'>
-                            <i id="sb-extra-permission">Note : Requires extra permission</i>
-                            <br/>
-                            <button id="btn-search-my-pages" class="btn btn-success">Show my pages</button>
-                            <button id="btn-search-my-groups" class="hidden btn btn-success">Show my groups</button>
-                            <br/>
-                        </td>
-                        <td style='vertical-align:middle' class='hidden'>
-                            <input id="txt-search" style='margin-bottom:5px'>
-                            <br/>
-                            <button id="btn-search-page" class="btn btn-success btn-sm">Search Page</button>
-                            <button id="btn-search-group" class="btn btn-success btn-sm">Search Group</button>
-                            <br/>
-                        </td>
-                    </tr>
-                    <tr class='hidden'>
-                        <td style='vertical-align:middle' colspan='2'>
-                            <span id='sb-extract-from-comment-plugin'>Get Comments from Facebook Comment Plugin</span>
-                            <br/>
-                            <span id='sb-comment-plugin-data-href'>data-href (target url)</span>
-                            :
-                            <input id="txt-comment-plugin-data" style='margin-bottom:5px; width:400px'>
-                            <br/>
-                            <button id="btn-parse-comment-plugin" class="btn btn-success btn-sm">Get Data</button>
-                            <br/>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkShowAttachment" checked>
+                                <span id="lblSbOptAtt">Include Attachments</span>
+                            </label>
+                            <br />
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkReactions" checked>
+                                <span id="lblSbOptPostReactions">Include PostReactions</span>
+                            </label>
+                            <br />
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkCommentLink" checked>
+                                <span id="lblSbOptCommentLink">Show Comment Link</span>
+                            </label>
+                            <br />
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkSkipUnknownUser" checked>
+                                <span id="lblSkipUnknownUser">Skip comments from unknown user</span>
+                            </label>
+                            <br />
+                            <label class="checkbox-inline">
+                                <input type="checkbox" id="chkShowTopInfo">
+                                <span id="lblShowTopInfo">Show additional information on top of comments table</span>
+                            </label>
+                            <br />
+                            <br />
+                            <span id='lblTokenNotice' style='color:red'>IMPORTANT NOTICE due to changes of Facebook API
+                                usage (start from 5 Feb 2018)
+                                <br />You must have role for page (at least
+                                <b>'Analyst'</b>) to extract comments</span>
+                            <br />
+                            <br />
+                            <button id="btnLoadReactions" class="btn btn-default">Get Reactions</button>
+                            <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
+                            <br />
                         </td>
                     </tr>
                 </table>
-                <br/>
-
-                <div id="page-search-result" class='hidden'>
-                    <table id="tbl-page-search-result" class="table table-bordered table-hover table-striped" style='margin:auto; max-width:600px'>
-                        <thead>
-                            <tr>
-                                <td>Image</td>
-                                <td>Info</td>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <br/>
-                    <input type="button" class="btn btn-default btn-sm" id="btn-search-result-more" value="More" />
-                </div>
-                <div id="page-search-result-empty" class='hidden'>
-                    <span id="sb-search-page-empty">No results found. Please try searching with different keywords.</span>
-                </div>
-
-                <div id='page-search-reset-hint' class="alert alert-warning">
-                        <b>HOTFIX (2019-11-03)</b><br/>
-                        <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission using this button</span><br/><button id='btn-reset'>RESET app permission</button>
-                        <hr>
-                        <br/><span id="manual-search">Manual mode : type your facebook page URL name here</span><br/>
-                        https://www.facebook.com/<input id="txt-manual-page-name" style='margin-bottom:5px' placeholder='PagePostManager'/>
-                        <button id='btn-manual-search'>Manual Search</button>
-                    </div>
-    
+                <br />
             </div>
-
-            <div id='page-board' class='app-pages'>
-                <button class="btn btn-default btn-sm" id='btn-board-search-again'>Back to page/group search</button>
-                <br/>
-                <br/>
-                <span id='board-name'>Post list</span>
-                <br/>
-                <br/>
-                <div id='group-post-extract-div' class='hidden'>
-                    <button id='btn-group-post-extract-show'>Page/Group Post Extract(Experimental)</button>
-                    <br/>
-                    <br/>
-                </div>
-                <div id="board-post-list" class='hidden'>
-                    <table id="tbl-board-post-list" class="table table-bordered table-hover table-striped" style='margin:auto; max-width:600px'>
-                        <thead>
-                            <tr>
-                                <td>Image</td>
-                                <td>Info</td>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <br/>
-                    <input type="button" class="btn btn-default btn-sm" id="btn-board-post-list-more" value="More" />
-                    <br/>
-                    <br/>
-                </div>
-            </div>
-
-            <div id='page-post' class='app-pages'>
-                <button class="btn btn-default btn-sm" id='btn-goto-search'>Go to page/group search</button>
-                <button class="btn btn-default btn-sm" id='btn-goto-post-list'>Go to post list</button>
-                <br/>
-                <br/>
-
-                <table id="tblShortSummary" class="table table-bordered table-hover text-left" style='margin:auto; max-width:600px'></table>
-                <br/>
-                <div id='reportOption'>
-                    <h3 id='lblReportOption'>Report Option</h3>
-                    <table style='margin:auto; max-width:600px' class='text-left'>
-                        <tr>
-                            <td>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="chkShowAttachment" checked>
-                                    <span id="lblSbOptAtt">Include Attachments</span>
-                                </label>
-                                <br/>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="chkReactions" checked>
-                                    <span id="lblSbOptPostReactions">Include PostReactions</span>
-                                </label>
-                                <br/>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="chkCommentLink" checked>
-                                    <span id="lblSbOptCommentLink">Show Comment Link</span>
-                                </label>
-                                <br/>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="chkSkipUnknownUser" checked>
-                                    <span id="lblSkipUnknownUser">Skip comments from unknown user</span>
-                                </label>
-                                <br/>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="chkShowTopInfo">
-                                    <span id="lblShowTopInfo">Show additional information on top of comments table</span>
-                                </label>
-                                <br/>
-                                <br/>
-                                <span id='lblTokenNotice' style='color:red'>IMPORTANT NOTICE due to changes of Facebook API usage (start from 5 Feb 2018)
-                                    <br/>You must have role for page (at least
-                                    <b>'Analyst'</b>) to extract comments</span>
-                                <br/>
-                                <br/>
-                                <button id="btnLoadReactions" class="btn btn-default">Get Reactions</button>
-                                <button id="btnLoadComments" class="btn btn-default">Get Comments</button>
-                                <br/>
-                            </td>
-                        </tr>
-                    </table>
-                    <br/>
-                </div>
-                <div id='reportResult'>
-                    <h3 id='lblReportResult'>Report Result</h3>
-                    <div class="alert alert-danger">
-                        <span id='lblBreakingChanges20180419'>
-                        <strong>Breaking Changes</strong><br/>
+            <div id='reportResult'>
+                <h3 id='lblReportResult'>Report Result</h3>
+                <div class="alert alert-danger">
+                    <span id='lblBreakingChanges20180419'>
+                        <strong>Breaking Changes</strong><br />
                         Due to breaking changes in Facebook Graph API Policy,
-                        <br/> All links heading to user page (which previously was provided in result table) were disabled. 
-                        <br/> To reach user page who wrote comment, you must use '<stron><u>Comment Link</u></strong>' in result table.
-                        <br/> Then you can visit users' page when comments are shown in facebook using that link.
-                        <br/> Also, all links in user name were replaced to comment link.
-                        <br/> Announcement post from Facebook :
-                        </span>
-                        <a href='https://developers.facebook.com/blog/post/2018/04/19/facebook-login-changes-address-abuse/'
-                            target='_blank'>Facebook Login Changes to Address Abuse</a>
-                    </div>
-                    <br/>
-                    <div id="divResultButtons">
-                        <center>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <span id='lblResultDownload'>Download (Chrome Only)</span>
-                                    </td>
-                                    <td>
+                        <br /> All links heading to user page (which previously was provided in result table) were
+                        disabled.
+                        <br /> To reach user page who wrote comment, you must use '<stron><u>Comment Link</u></strong>'
+                            in result table.
+                            <br /> Then you can visit users' page when comments are shown in facebook using that link.
+                            <br /> Also, all links in user name were replaced to comment link.
+                            <br /> Announcement post from Facebook :
+                    </span>
+                    <a href='https://developers.facebook.com/blog/post/2018/04/19/facebook-login-changes-address-abuse/'
+                        target='_blank'>Facebook Login Changes to Address Abuse</a>
+                </div>
+                <br />
+                <div id="divResultButtons">
+                    <center>
+                        <table>
+                            <tr>
+                                <td>
+                                    <span id='lblResultDownload'>Download (Chrome Only)</span>
+                                </td>
+                                <td>
 
-                                        <button id="btnExportResultTable" class="btn btn-warning">Result Table(.xls)</button>
-                                        <button id="btnExportResultTableXlsx" class="btn btn-warning hidden">.xlsx</button>
-                                        <button id="btnExportResultAttachmentsZip" class="btn btn-warning">Result+Attachments(.zip)</button>
-                                    </td>
-                                </tr>
-                                <tr style='height:50px'>
-                                    <td>
-                                        <span id='lblResultShow'>Show Table</span>
-                                    </td>
-                                    <td>
-                                        <button id="btnShowResultTable" class="btn btn-info">Show in Current Window</button>
-                                        <button id="btnShowResultTableNewWindow" class="btn btn-info">Show in New Window</button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </center>
-                    </div>
-                    <br/>
-                    <button id="btnChangeOption" class="btn btn-success">Change Report Option</button>
-                    <br/>
-                    <br/>
-                    <div class='text-left' style='margin:20px'>
-                        <table id="tblResultTable" class="table table-bordered table-hover"></table>
-                    </div>
+                                    <button id="btnExportResultTable" class="btn btn-warning">Result
+                                        Table(.xls)</button>
+                                    <button id="btnExportResultTableXlsx" class="btn btn-warning hidden">.xlsx</button>
+                                    <button id="btnExportResultAttachmentsZip"
+                                        class="btn btn-warning">Result+Attachments(.zip)</button>
+                                </td>
+                            </tr>
+                            <tr style='height:50px'>
+                                <td>
+                                    <span id='lblResultShow'>Show Table</span>
+                                </td>
+                                <td>
+                                    <button id="btnShowResultTable" class="btn btn-info">Show in Current Window</button>
+                                    <button id="btnShowResultTableNewWindow" class="btn btn-info">Show in New
+                                        Window</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </center>
+                </div>
+                <br />
+                <button id="btnChangeOption" class="btn btn-success">Change Report Option</button>
+                <br />
+                <br />
+                <div class='text-left' style='margin:20px'>
+                    <table id="tblResultTable" class="table table-bordered table-hover"></table>
                 </div>
             </div>
+        </div>
 
-            <div id="divFooter" class="container theme-showcase" role="main">
-                <div id="shareBox"></div>
-                <br/>
-                <div style='text-align:center'>
+        <div id="divFooter" class="container theme-showcase" role="main">
+            <div id="shareBox"></div>
+            <br />
+            <div style='text-align:center'>
 
-                    <div id="commentBox"></div>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-large btn-default" href="/">Home</a>
-                </div>
+                <div id="commentBox"></div>
+                <br />
+                <br />
+                <a class="btn btn-large btn-default" href="/">Home</a>
             </div>
+        </div>
 
 
-            <div id="fb-root"></div>
+        <div id="fb-root"></div>
 
-            <!-- Modal, for post loader -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                                <span class="sr-only">Close</span>
-                            </button>
-                            <h4 class="modal-title" id="myModalLabel">Extracting...</h4>
-                        </div>
-                        <div class="modal-body">
-                            Reactions
-                            <br/>
-                            <div class="progress">
-                                <div id="prgLoadReactionsInfo" class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"
-                                    style="width: 2%;">
-                                    2%
-                                </div>
+        <!-- Modal, for post loader -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Extracting...</h4>
+                    </div>
+                    <div class="modal-body">
+                        Reactions
+                        <br />
+                        <div class="progress">
+                            <div id="prgLoadReactionsInfo" class="progress-bar" role="progressbar" aria-valuenow="2"
+                                aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
+                                2%
                             </div>
+                        </div>
 
-                            <div id="prgLoadReactionsInfoX"></div>
-                            <br/> Comments
-                            <br/>
-                            <div class="progress">
-                                <div id="prgLoadCommentsInfo" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    0%
-                                </div>
+                        <div id="prgLoadReactionsInfoX"></div>
+                        <br /> Comments
+                        <br />
+                        <div class="progress">
+                            <div id="prgLoadCommentsInfo" class="progress-bar" role="progressbar" aria-valuenow="0"
+                                aria-valuemin="0" aria-valuemax="100">
+                                0%
                             </div>
-                            <div id="prgLoadCommentsInfoX"></div>
-                            <br/>
+                        </div>
+                        <div id="prgLoadCommentsInfoX"></div>
+                        <br />
 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Hide</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Hide</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- http://stackoverflow.com/questions/17126453/html-table-to-excel-javascript -->
-            <a id="dlink" style="display:none;"></a>
-            <script src="simpletranslator.js"></script>
-            <script src="utility.js"></script>
-            <script src="fbmanager.js"></script>
-            <script src="fbapilistloader.js"></script>
-            <script src="postloader.js"></script>
-            <script src="pagepostmanager.js"></script>
-            <script src="pagepostmanager_result_table.js"></script>
+        <!-- http://stackoverflow.com/questions/17126453/html-table-to-excel-javascript -->
+        <a id="dlink" style="display:none;"></a>
+        <script src="simpletranslator.js"></script>
+        <script src="utility.js"></script>
+        <script src="fbmanager.js"></script>
+        <script src="fbapilistloader.js"></script>
+        <script src="postloader.js"></script>
+        <script src="pagepostmanager.js"></script>
+        <script src="pagepostmanager_result_table.js"></script>
 
-    </body>
+</body>
 
 </html>
 

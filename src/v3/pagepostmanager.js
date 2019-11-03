@@ -382,10 +382,6 @@ function board_loadSuccess() {
         g_appContext.boardInfo.name,
         SimpleTranslator.getKey(g_appContext.boardInfo.type == 'group' ? 'group' : 'page')));
 
-    $("#group-post-extract-div").addClass('hidden');
-    //if (g_appContext.boardInfo.type == 'group')
-    $("#group-post-extract-div").removeClass('hidden');
-
     $('#tbl-board-post-list tr:gt(0)').remove();
     var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
