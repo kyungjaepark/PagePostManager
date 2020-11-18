@@ -3,8 +3,8 @@ var g_appConfig =
     basicPermissions: ['public_profile'],
     appId: '624861190962222',
     testAppId: '399334770769428',
-    fbAppVersion: 'v4.0',
-    testFbAppVersion: 'v4.0',
+    fbAppVersion: 'v9.0',
+    testFbAppVersion: 'v9.0',
 }
 
 var g_appContext =
@@ -56,17 +56,14 @@ function main() {
 function wireEvents() {
     $('#btn-basic-login').click(onBtnBasicLoginClick);
     $('#btn-search-my-pages').click(onBtnSearchMyPagesClick);
-    $('#btn-search-my-groups').click(onBtnSearchMyGroupsClick);
-    $('#btn-search-page').click(onBtnSearchPageClick);
-    $('#btn-search-group').click(onBtnSearchGroupClick);
     $('#btn-search-result-more').click(onBtnPageSearchResultMoreClick);
     $('#btn-reset').click(onBtnResetClick);
+    $('#btn-generate-bug-report').click(onBtnGenerateBugReport);
     $('#btn-manual-search').click(onBtnManualSearchClick);
     $('#btn-board-search-again').click(onBtnBoardSearchAgainClick);
     $('#btn-goto-search').click(onBtnGotoSearchClick);
     $('#btn-goto-post-list').click(onBtnGotoPostListClick);
     $('#btn-board-post-list-more').click(onBtnBoardPostListMoreClick);
-    $('#btn-parse-comment-plugin').click(onBtnParseCommentPluginClick);
     $(window).bind('hashchange', applyFragmentValue);
 }
 
@@ -128,6 +125,7 @@ function onFbInitialized() {
     processBasicLogin();
 }
 
+var g_loginFailCount = 0;
 function processBasicLogin() {
     $('#lblFbLoginProgress').text('Login Step 3 of 4 finished.');
     var lackingPermission = fbmanager.checkForLackingPermission(g_appConfig.basicPermissions);
@@ -140,7 +138,23 @@ function processBasicLogin() {
         $('#lblFbLoginProgress').text('Login Step 1 of 4 finished.');
         $('#basic-login-box').removeClass('hidden');
         $('#btn-basic-login').prop('disabled', false);
+        g_loginFailCount++;
+        if (g_loginFailCount > 1)
+        {
+            $('#trouble-login').removeClass('hidden');
+        }
     }
+}
+
+function onBtnGenerateBugReport()
+{
+    var logResults = fbmanager.debug_logs.slice(0);
+    logResults.unshift('아래 로그를 복사 또는 파일로 저장해서, 페이스북 페이지 메시지로 보내주세요.');
+    logResults.unshift('메시지를 보내실 페이지 주소 : https://www.facebook.com/pagepostmanager');
+    $('body')
+        .append($('<textarea style="position:fixed; left:0; width:100%; top:0; bottom:0">')
+        .text(logResults.join('\n')));
+    
 }
 
 function onBtnBasicLoginClick() {
@@ -149,6 +163,7 @@ function onBtnBasicLoginClick() {
 }
 
 function onFbLoginFinish(response) {
+    
     $('#lblFbLoginProgress').text('Login Step 2 of 4 finished.');
     fbmanager.refreshPermission(processBasicLogin);
 }
@@ -177,7 +192,7 @@ function onBtnSearchMyPagesClick() {
     function onSuccess() {
         searchPage_startRequest('/me/accounts', {}, 'page');
     }
-    var extraPermissions = ['pages_show_list', 'manage_pages'];
+    var extraPermissions = ['pages_show_list', 'pages_read_engagement', 'pages_read_user_content'];
     var lackingPermission = fbmanager.checkForLackingPermission(extraPermissions);
     if (lackingPermission.length == 0) {
         onSuccess();
@@ -193,35 +208,6 @@ function onBtnSearchMyPagesClick() {
             });
         }, { scope: lackingPermission, return_scopes: true });
     }
-}
-
-function onBtnSearchMyGroupsClick() {
-    function onSuccess() {
-        searchPage_startRequest('/me/groups', {}, 'group');
-    }
-    var extraPermissions = ['user_managed_groups'];
-    var lackingPermission = fbmanager.checkForLackingPermission(extraPermissions);
-    if (lackingPermission.length == 0) {
-        onSuccess();
-    }
-    else {
-        FB.login(function (response) {
-            fbmanager.refreshPermission(function () {
-                if (fbmanager.checkForLackingPermission(lackingPermission).length == 0)
-                    onSuccess();
-                else {
-                    // TODO: 실패 안내 메시지
-                }
-            });
-        }, { scope: lackingPermission, return_scopes: true });
-    }
-}
-
-function onBtnSearchPageClick() {
-    searchPage_startRequest('/search', { q: $('#txt-search').val(), type: 'page' }, 'page');
-}
-function onBtnSearchGroupClick() {
-    searchPage_startRequest('/search', { q: $('#txt-search').val(), type: 'group' }, 'group');
 }
 
 function searchPage_startRequest(apiPrefix, param, searchType) {
@@ -258,12 +244,7 @@ function searchPage_processResult(response) {
         textTd.addClass('text-left');
         textTd.append($('<strong>').text(this.name));
 
-        if (g_appContext.searchType == 'group') {
-            textTd.append($('<br/>'));
-            textTd.append($('<strong>').addClass('small').text(numberWithCommas(this.members.summary.total_count) + ' Reactions'));
-            textTd.append($('<pre>').css('background-color', 'lightyellow').css('white-space', 'pre-line').text(this.description));
-        }
-        else {
+        {
             if (this.is_verified)
                 textTd.append(verified_img.clone());
             textTd.append($('<br/>'));
@@ -344,14 +325,6 @@ function searchPage_onPageSelection() {
     setCommandFragment("board:" + $(this).attr('id'));
 }
 
-// facebook comment plugin -----------------------------------------------------
-
-function onBtnParseCommentPluginClick() {
-    FB.api('/?id=' + $('#txt-comment-plugin-data').val(), function (response) {
-        setCommandFragment("post:" + response["og_object"].id);
-    });
-}
-
 // board -----------------------------------------------------------------------
 
 function trySetupBoard(boardId, successCallback, failCallback) {
@@ -381,10 +354,10 @@ function board_loadSuccess() {
     switchPage('board');
     $('#board-name').text(String.format(SimpleTranslator.getKey('post_list_title_format'),
         g_appContext.boardInfo.name,
-        SimpleTranslator.getKey(g_appContext.boardInfo.type == 'group' ? 'group' : 'page')));
+        SimpleTranslator.getKey('page')));
 
     $('#tbl-board-post-list tr:gt(0)').remove();
-    var edgeName = (g_appContext.boardInfo.type === 'group' ? 'feed' : 'posts');
+    var edgeName = 'posts';
     FB.api(String.format('/{0}/{1}', g_appContext.boardInfo.id, edgeName),
         {
             'fields': 'id,permalink_url,from,admin_creator,icon,message,updated_time,story,picture,reactions.summary(1).limit(1),comments.filter(stream).summary(1).limit(1),status_type',
@@ -608,7 +581,6 @@ function wireEvents_post() {
     $('#btnLoadReactions').click(function () { getReactions(); });
     $('#btnLoadComments').click(function () { getComments(); });
     $('#btnExportResultTable').click(function () { buildResultTable(); tableToExcel(tblResultTable.outerHTML, 'Results', 'results_pagepostmanager.xls'); });
-    $('#btnExportResultTableXlsx').click(function () { generateXlsx('results_pagepostmanager.xls'); });
     $('#btnExportResultAttachmentsZip').click(function () { startDownloadAttachments(); });
     $('#btnShowResultTable').click(function () { buildResultTable(); $('#tblResultTable').removeClass('hidden'); });
     $('#btnShowResultTableNewWindow').click(function () { buildResultTable(); writeToNewTable($('#tblResultTable')); });
@@ -616,11 +588,6 @@ function wireEvents_post() {
         $('#reportOption').removeClass('hidden'); $('#reportResult').addClass('hidden');
         ;
     });
-}
-
-function generateXlsx(xlsxFilename) {
-    var xlsxObject = getResultTableXlsx(g_appContext.tableGenerationOption);
-    alert('todo:xlsxObject->xlsxFilename');
 }
 
 function startDownloadAttachments() {

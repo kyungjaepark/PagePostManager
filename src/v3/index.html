@@ -58,11 +58,11 @@
         <div id='page-welcome' class='app-pages'>
             <h2 id='sb-welcome'>Welcome!</h2>
             <br />
-            <span id='sb-intro'>With Page/Group Post Manager for Facebook, You can easily get comments and reactions
-                from your pages/groups'
+            <span id='sb-intro'>With Page Post Manager for Facebook, You can easily get comments and reactions
+                from your pages'
                 posting.
             </span>
-            <br />
+            <br /   >
 
             <div id='basic-login-box'>
                 <span id='login-required'>To continue, Facebook authorization is required.</span>
@@ -76,23 +76,21 @@
                 <p id='lblFbLoginProgress'>
                     Login Step 1 of 4 finished.
                 </p>
+                <div id='trouble-login' class='hidden'>
+                    <soan id='lbl-trouble-login'>Having trouble in logging in?</soan><br/>
+                    <button id='btn-reset'>RESET app permission</button>
+                    <button id='btn-generate-bug-report'>Generate Bug Report</button>
+                </div>
                 <br />
 
             </div>
         </div>
 
         <div id='page-search' class='app-pages'>
-            <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission
-                using this button</span><br /><button id='btn-reset'>RESET app permission</button>
-            <hr>
-
             <table class='table table-bordered' style='margin:auto; max-width:600px'>
                 <tr>
                     <td>
                         <span id='sb-show-admin'>Show pages I am admin of</span>
-                    </td>
-                    <td class='hidden'>
-                        <span id='sb-search-by-name'>Search Page/Group by Name</span>
                     </td>
                 </tr>
                 <tr>
@@ -100,26 +98,6 @@
                         <i id="sb-extra-permission">Note : Requires extra permission</i>
                         <br />
                         <button id="btn-search-my-pages" class="btn btn-success">Show my pages</button>
-                        <button id="btn-search-my-groups" class="hidden btn btn-success">Show my groups</button>
-                        <br />
-                    </td>
-                    <td style='vertical-align:middle' class='hidden'>
-                        <input id="txt-search" style='margin-bottom:5px'>
-                        <br />
-                        <button id="btn-search-page" class="btn btn-success btn-sm">Search Page</button>
-                        <button id="btn-search-group" class="btn btn-success btn-sm">Search Group</button>
-                        <br />
-                    </td>
-                </tr>
-                <tr class='hidden'>
-                    <td style='vertical-align:middle' colspan='2'>
-                        <span id='sb-extract-from-comment-plugin'>Get Comments from Facebook Comment Plugin</span>
-                        <br />
-                        <span id='sb-comment-plugin-data-href'>data-href (target url)</span>
-                        :
-                        <input id="txt-comment-plugin-data" style='margin-bottom:5px; width:400px'>
-                        <br />
-                        <button id="btn-parse-comment-plugin" class="btn btn-success btn-sm">Get Data</button>
                         <br />
                     </td>
                 </tr>
@@ -150,12 +128,15 @@
                 https://www.facebook.com/<input id="txt-manual-page-name" style='margin-bottom:5px'
                     placeholder='PagePostManager' />
                 <button id='btn-manual-search'>Manual Search</button>
-            </div>
+                <hr>
+                <span id="hotfix-reload">If you have any problem retrieveing page list, try reset this app permission
+                        using this button</span><br /><button id='btn-reset'>RESET app permission</button>
+                    </div>
 
         </div>
 
         <div id='page-board' class='app-pages'>
-            <button class="btn btn-default btn-sm" id='btn-board-search-again'>Back to page/group search</button>
+            <button class="btn btn-default btn-sm" id='btn-board-search-again'>Back to page search</button>
             <br />
             <br />
             <span id='board-name'>Post list</span>
@@ -180,7 +161,7 @@
         </div>
 
         <div id='page-post' class='app-pages'>
-            <button class="btn btn-default btn-sm" id='btn-goto-search'>Go to page/group search</button>
+            <button class="btn btn-default btn-sm" id='btn-goto-search'>Go to page search</button>
             <button class="btn btn-default btn-sm" id='btn-goto-post-list'>Go to post list</button>
             <br />
             <br />
@@ -262,7 +243,6 @@
 
                                     <button id="btnExportResultTable" class="btn btn-warning">Result
                                         Table(.xls)</button>
-                                    <button id="btnExportResultTableXlsx" class="btn btn-warning hidden">.xlsx</button>
                                     <button id="btnExportResultAttachmentsZip"
                                         class="btn btn-warning">Result+Attachments(.zip)</button>
                                 </td>
@@ -354,7 +334,7 @@
         <script src="fbmanager.js"></script>
         <script src="fbapilistloader.js"></script>
         <script src="postloader.js"></script>
-        <script src="pagepostmanager.js"></script>
+        <script src="pagepostmanager.js?v=202011"></script>
         <script src="pagepostmanager_result_table.js"></script>
 
 </body>
